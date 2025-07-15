@@ -3,7 +3,7 @@ import React from "react";
 const LocationSection = () => {
   return (
     <section className="py-16 px-6 md:px-20 bg-gray-50">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center">
+      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center my-15">
         {/* Text Content */}
         <div>
           <h2 className="text-4xl font-bold text-gray-800 mb-4">

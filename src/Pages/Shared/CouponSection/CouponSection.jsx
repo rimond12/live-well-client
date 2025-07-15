@@ -21,7 +21,7 @@ const coupons = [
 
 const CouponSection = () => {
   return (
-    <section className="py-16 bg-gradient-to-b from-white to-green-50 px-6 md:px-20">
+    <section className="py-16 bg-gradient-to-b from-white to-green-50 px-6 md:px-20 my-15">
       <div className="max-w-6xl mx-auto text-center">
         <motion.h2
           className="text-4xl font-bold mb-10 text-gray-800"

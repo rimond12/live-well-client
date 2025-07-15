@@ -34,7 +34,7 @@ const Banner = () => {
             style={{
               position: "absolute",
               inset: 0,
-              backgroundColor: "rgba(0,0,0,0.3)", 
+              backgroundColor: "rgba(0,0,0,0.3)",
               pointerEvents: "none",
             }}
           ></div>
@@ -50,6 +50,31 @@ const Banner = () => {
               </p>
             </div>
           </div>
+
+          {/* Booking Box */}
+          
+            <div className="absolute bottom-8 left-1/2 transform -translate-x-1/2 z-30 bg-white rounded-xl shadow-2xl flex flex-col md:flex-row overflow-hidden text-center text-base w-[95%] md:w-[70%] lg:w-[60%] xl:w-[50%] ">
+              <div className="p-5 border-b md:border-b-0 md:border-r flex-1 justify-center items-center">
+                <p className="text-xs text-gray-500">CHECK IN</p>
+                <p className="font-bold text-lg">
+                  15 <span className="text-sm">Jul</span>
+                </p>
+              </div>
+              <div className="p-5 border-b md:border-b-0 md:border-r flex-1">
+                <p className="text-xs text-gray-500">CHECK OUT</p>
+                <p className="font-bold text-lg">
+                  16 <span className="text-sm">Jul</span>
+                </p>
+              </div>
+              <div className="p-5 border-b md:border-b-0 md:border-r flex-1">
+                <p className="text-xs text-gray-500">GUESTS</p>
+                <p className="font-bold text-lg">01</p>
+              </div>
+              <button className="bg-black text-white px-6 py-5 text-sm md:text-base font-semibold hover:bg-gray-800 transition w-full md:w-auto">
+                BOOK NOW →
+              </button>
+            </div>
+          
         </div>
       ))}
     </div>
