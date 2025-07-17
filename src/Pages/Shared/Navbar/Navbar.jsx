@@ -22,7 +22,7 @@ const Navbar = () => {
   const navLinks = (
     <>
       <li><NavLink to="/">Home</NavLink></li>
-      <li><NavLink to="/apartment">Apartments</NavLink></li>
+      <li><NavLink to="/apartments">Apartments</NavLink></li>
       <li><NavLink to="/about">About</NavLink></li>
     </>
   );
@@ -69,7 +69,7 @@ const Navbar = () => {
                   <img
                     src={user?.photoURL}
                     alt="Profile"
-                    className="w-[70px] h-[70px] rounded-full border-2 cursor-pointer"
+                    className="w-[60px] h-[60px] rounded-full border-2 border-white cursor-pointer"
                   />
                 </div>
                 <ul
