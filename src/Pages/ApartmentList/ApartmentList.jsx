@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import axios from "axios";
 import useAuth from "../../hooks/useAuth";
 import ApartmentCard from "./ApartmentCard";
+import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const ApartmentList = () => {
   const { user } = useAuth();
@@ -13,54 +14,55 @@ const ApartmentList = () => {
 
   const itemsPerPage = 6;
 
-  const fetchApartments = (page = 1, min = "", max = "") => {
-    const params = {
-      page,
-      limit: itemsPerPage,
-    };
-    if (min !== "") params.min = min;
-    if (max !== "") params.max = max;
+const fetchApartments = (page = 1, min = "", max = "") => {
+  const params = {
+    page,
+    limit: itemsPerPage,
+  };
+  if (min !== "") params.min = min;
+  if (max !== "") params.max = max;
 
-    axios
-      .get("http://localhost:3000/apartments", { params })
-      .then((res) => {
-        setApartments(res.data.apartments);
-        setTotal(res.data.total);
-      })
-      .catch((err) => {
-        console.error("API error:", err.message);
-      });
+  useAxiosSecure
+    .get("/apartments", { params })
+    .then((res) => {
+      setApartments(res.data.apartments);
+      setTotal(res.data.total);
+    })
+    .catch((err) => {
+      console.error("API error:", err.message);
+    });
+};
+
+useEffect(() => {
+  fetchApartments(currentPage, minRent, maxRent);
+}, [currentPage, minRent, maxRent]); // rent range change হলে fetch auto হবে
+
+const handleSearch = () => {
+  setCurrentPage(1);
+  fetchApartments(1, minRent, maxRent);
+};
+
+const handleAgreement = async (apartment) => {
+  const agreementData = {
+    userName: user?.displayName,
+    userEmail: user?.email,
+    floorNo: apartment.floorNo,
+    blockName: apartment.blockName,
+    apartmentNo: apartment.apartmentNo,
+    rent: apartment.rent,
+    status: "pending",
   };
 
-  useEffect(() => {
-    fetchApartments(currentPage, minRent, maxRent);
-  }, [currentPage]);
-
-  const handleSearch = () => {
-    setCurrentPage(1);
-    fetchApartments(1, minRent, maxRent);
-  };
-
-  const handleAgreement = async (apartment) => {
-    const agreementData = {
-      userName: user.displayName,
-      userEmail: user.email,
-      floorNo: apartment.floorNo,
-      blockName: apartment.blockName,
-      apartmentNo: apartment.apartmentNo,
-      rent: apartment.rent,
-      status: "pending",
-    };
-
-    try {
-      await axios.post("http://localhost:3000/agreements", agreementData);
-      alert("Agreement submitted successfully!");
-    } catch (err) {
-      console.error(err);
-      alert("Failed to submit agreement.");
-    }
-  };
-
+  try {
+    await useAxiosSecure.post("/agreements", agreementData);
+    alert("Agreement submitted successfully!");
+    // toast.success("Agreement submitted successfully!"); // optional
+  } catch (err) {
+    console.error(err);
+    alert("Failed to submit agreement.");
+    // toast.error("Failed to submit agreement."); // optional
+  }
+};
   const totalPages = Math.ceil(total / itemsPerPage);
 
 
