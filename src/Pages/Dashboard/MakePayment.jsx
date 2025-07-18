@@ -4,43 +4,42 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const MakePayment = () => {
   const { user } = useAuth();
- 
+  const axiosSecure = useAxiosSecure();
 
-  // ধরলাম agreement data props বা context থেকে পাবো, না হলে API থেকে ফেচ করতে হবে
   const [agreement, setAgreement] = useState(null);
-
-  // Form state
   const [month, setMonth] = useState("");
   const [couponCode, setCouponCode] = useState("");
   const [discount, setDiscount] = useState(0);
   const [finalAmount, setFinalAmount] = useState(0);
   const [message, setMessage] = useState("");
-
-  // লোডিং/এরর states
   const [loading, setLoading] = useState(false);
 
-  // Fetch user agreement on mount
+  // Load user's agreement on mount
   useEffect(() => {
     if (user?.email) {
-      useAxiosSecure.get(`/agreements/${user.email}`)
+      axiosSecure.get(`/agreements/${user.email}`)
         .then(res => {
           setAgreement(res.data);
-          setFinalAmount(res.data.rent); // প্রাথমিক ভ্যালু
+          setFinalAmount(res.data.rent); // শুরুতে final amount = rent
         })
-        .catch(err => console.error(err));
+        .catch(err => {
+          console.error(err);
+          setMessage("Failed to load agreement");
+        });
     }
-  }, [user, useAxiosSecure]);
+  }, [user, axiosSecure]);
 
-  // কুপন যাচাই করবো
+  // Apply coupon and calculate discount
   const handleApplyCoupon = () => {
     if (!couponCode.trim()) {
       setMessage("Please enter a coupon code");
       return;
     }
+
     setMessage("");
     setLoading(true);
 
-    useAxiosSecure.post("/validate-coupon", { couponCode: couponCode.trim() })
+    axiosSecure.post("/validate-coupon", { couponCode: couponCode.trim() })
       .then(res => {
         if (res.data.valid) {
           const discountAmount = (agreement.rent * res.data.discountPercentage) / 100;
@@ -61,15 +60,17 @@ const MakePayment = () => {
       .finally(() => setLoading(false));
   };
 
-  // পেমেন্ট সাবমিট
+  // Submit payment
   const handleSubmit = (e) => {
     e.preventDefault();
+
     if (!month) {
       setMessage("Please select a month");
       return;
     }
 
     setLoading(true);
+
     const paymentData = {
       memberEmail: user.email,
       floorNo: agreement.floorNo,
@@ -77,13 +78,13 @@ const MakePayment = () => {
       apartmentNo: agreement.apartmentNo,
       rent: agreement.rent,
       month,
-      couponCode: discount > 0 ? couponCode : null,
+      couponCode: discount > 0 ? couponCode.trim() : null,
       discountPercentage: discount,
       finalAmount,
       paymentDate: new Date().toISOString(),
     };
 
-    useAxiosSecure.post("/payments", paymentData)
+    axiosSecure.post("/payments", paymentData)
       .then(res => {
         if (res.data.success) {
           setMessage("Payment successful! Thank you.");
@@ -110,60 +111,31 @@ const MakePayment = () => {
       <h2 className="text-2xl font-bold mb-4 text-indigo-600">💳 Make Payment</h2>
 
       <form onSubmit={handleSubmit} className="space-y-4">
+        {/* readonly fields for agreement info */}
         <div>
           <label className="block font-semibold">Member Email</label>
-          <input
-            type="email"
-            value={user.email}
-            readOnly
-            className="input input-bordered w-full"
-          />
+          <input type="email" value={user.email} readOnly className="input input-bordered w-full" />
         </div>
-
         <div>
           <label className="block font-semibold">Floor No</label>
-          <input
-            type="text"
-            value={agreement.floorNo}
-            readOnly
-            className="input input-bordered w-full"
-          />
+          <input type="text" value={agreement.floorNo} readOnly className="input input-bordered w-full" />
         </div>
-
         <div>
           <label className="block font-semibold">Block Name</label>
-          <input
-            type="text"
-            value={agreement.blockName}
-            readOnly
-            className="input input-bordered w-full"
-          />
+          <input type="text" value={agreement.blockName} readOnly className="input input-bordered w-full" />
         </div>
-
         <div>
           <label className="block font-semibold">Apartment No</label>
-          <input
-            type="text"
-            value={agreement.apartmentNo}
-            readOnly
-            className="input input-bordered w-full"
-          />
+          <input type="text" value={agreement.apartmentNo} readOnly className="input input-bordered w-full" />
         </div>
-
         <div>
           <label className="block font-semibold">Rent</label>
-          <input
-            type="text"
-            value={`$${agreement.rent}`}
-            readOnly
-            className="input input-bordered w-full"
-          />
+          <input type="text" value={`$${agreement.rent}`} readOnly className="input input-bordered w-full" />
         </div>
 
+        {/* Month selection */}
         <div>
-          <label className="block font-semibold" htmlFor="month">
-            Select Month
-          </label>
+          <label className="block font-semibold" htmlFor="month">Select Month</label>
           <select
             id="month"
             value={month}
@@ -172,33 +144,20 @@ const MakePayment = () => {
           >
             <option value="">-- Select Month --</option>
             {[
-              "January",
-              "February",
-              "March",
-              "April",
-              "May",
-              "June",
-              "July",
-              "August",
-              "September",
-              "October",
-              "November",
-              "December",
-            ].map((m) => (
-              <option key={m} value={m}>
-                {m}
-              </option>
+              "January", "February", "March", "April", "May", "June",
+              "July", "August", "September", "October", "November", "December"
+            ].map(m => (
+              <option key={m} value={m}>{m}</option>
             ))}
           </select>
         </div>
 
+        {/* Coupon input and apply */}
         <div>
-          <label className="block font-semibold" htmlFor="couponCode">
-            Coupon Code (Optional)
-          </label>
+          <label className="block font-semibold" htmlFor="couponCode">Coupon Code (Optional)</label>
           <input
-            type="text"
             id="couponCode"
+            type="text"
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
             placeholder="Enter coupon code"
@@ -215,11 +174,10 @@ const MakePayment = () => {
         </div>
 
         {discount > 0 && (
-          <p className="text-green-600 font-semibold">
-            Discount applied: {discount}% off
-          </p>
+          <p className="text-green-600 font-semibold">Discount applied: {discount}% off</p>
         )}
 
+        {/* Final amount */}
         <div>
           <label className="block font-semibold">Final Amount</label>
           <input
@@ -230,6 +188,7 @@ const MakePayment = () => {
           />
         </div>
 
+        {/* Submit button */}
         <button
           type="submit"
           disabled={loading}

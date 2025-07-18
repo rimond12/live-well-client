@@ -4,13 +4,13 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const MyAgreement = () => {
   const { user } = useAuth();
-//   const axiosSecure = useAxiosSecure();
+  const axiosSecure = useAxiosSecure();
   const [agreement, setAgreement] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     if (user?.email) {
-      useAxiosSecure
+      axiosSecure
         .get(`/agreements/${user.email}`)
         .then((res) => {
           setAgreement(res.data);
@@ -21,7 +21,7 @@ const MyAgreement = () => {
           setLoading(false);
         });
     }
-  }, [user, useAxiosSecure]);
+  }, [user, axiosSecure]);
 
   if (loading) {
     return (

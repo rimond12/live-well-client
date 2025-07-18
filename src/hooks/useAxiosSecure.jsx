@@ -1,8 +1,12 @@
-import axios from "axios";
+import axios from 'axios';
+import React from 'react';
 
-const useAxiosSecure = axios.create({
-  baseURL: "http://localhost:3000", // তোমার সার্ভার URL
-  // এখনই token বা cookies ব্যবহার না করলে withCredentials না দেয়াটা ঠিক
+const axiosSecure = axios.create({
+    baseURL: `http://localhost:3000`
 });
+
+const useAxiosSecure = () => {
+    return axiosSecure;
+};
 
 export default useAxiosSecure;

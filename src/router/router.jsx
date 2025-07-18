@@ -10,6 +10,8 @@ import DashboardHome from "../Pages/Dashboard/DashboardHome";
 import MyAgreement from "../Pages/Dashboard/MyAgreement";
 import MakePayment from "../Pages/Dashboard/MakePayment";
 import AllAgreements from "../Pages/Dashboard/AllAgreements";
+import PostAnnouncement from "../Pages/Dashboard/PostAnnouncement";
+import ManageCoupon from "../Pages/Dashboard/ManageCoupon";
 
 export const router = createBrowserRouter([
   {
@@ -56,11 +58,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "post-announcement",
-        // element: <PostAnnouncement />,
+        element: <PostAnnouncement />,
       },
       {
         path: "manage-coupons",
-        // element: <ManageCoupons />,
+        element: <ManageCoupon />,
       },
     ]
   }

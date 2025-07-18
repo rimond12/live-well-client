@@ -4,10 +4,10 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 const AllAgreements = () => {
   const [agreements, setAgreements] = useState([]);
   const [loading, setLoading] = useState(true);
-
+ const axiosSecure = useAxiosSecure();
   const fetchAgreements = () => {
     setLoading(true);
-    useAxiosSecure
+    axiosSecure
       .get("/agreements")
       .then((res) => {
         setAgreements(res.data);
@@ -24,7 +24,7 @@ const AllAgreements = () => {
   }, []);
 
   const handleAccept = (id, userEmail) => {
-    useAxiosSecure
+    axiosSecure
       .patch(`/agreements/${id}/accept`)
       .then(() => {
         alert(`Agreement accepted for ${userEmail}`);
@@ -37,7 +37,7 @@ const AllAgreements = () => {
   };
 
   const handleReject = (id, userEmail) => {
-    useAxiosSecure
+    axiosSecure
       .patch(`/agreements/${id}/reject`)
       .then(() => {
         alert(`Agreement rejected for ${userEmail}`);
