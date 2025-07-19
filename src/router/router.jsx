@@ -12,6 +12,10 @@ import MakePayment from "../Pages/Dashboard/MakePayment";
 import AllAgreements from "../Pages/Dashboard/AllAgreements";
 import PostAnnouncement from "../Pages/Dashboard/PostAnnouncement";
 import ManageCoupon from "../Pages/Dashboard/ManageCoupon";
+import MyProfile from "../Pages/Dashboard/MyProfile";
+import Announcements from "../Pages/Dashboard/Announcements";
+import PaymentHistory from "../Pages/Dashboard/PaymentHistory";
+import ManageMembers from "../Pages/Dashboard/ManageMembers";
 
 export const router = createBrowserRouter([
   {
@@ -36,34 +40,59 @@ export const router = createBrowserRouter([
       }
     ],
   },
-  {
-    path:"/dashboard",
-    element:<DashboardLayout></DashboardLayout>,
-    children:[
-          {
-        path: "",
-        element: <DashboardHome />,
-      },
-      {
-        path: "my-agreement",
-        element: <MyAgreement />,
-      },
-      {
-        path: "make-payment",
-        element: <MakePayment />,
-      },
-      {
-        path: "all-agreements",
-        element: <AllAgreements />,
-      },
-      {
-        path: "post-announcement",
-        element: <PostAnnouncement />,
-      },
-      {
-        path: "manage-coupons",
-        element: <ManageCoupon />,
-      },
-    ]
-  }
+ {
+  path: "/dashboard",
+  element: <DashboardLayout />,
+  children: [
+    {
+      path: "",
+      element: <DashboardHome />,
+    },
+    {
+      path: "my-profile",
+      element: <MyProfile />,
+    },
+    {
+      path: "announcements",
+      element: <Announcements />,
+    },
+    {
+      path: "payment-history",
+      element: <PaymentHistory />,
+    },
+    {
+      path: "make-payment",
+      element: <MakePayment />,
+    },
+    {
+      path: "my-agreement",
+      element: <MyAgreement />,
+    },
+    {
+      path: "post-announcement",
+      element: <PostAnnouncement />,
+    },
+    {
+      path: "manage-coupons",
+      element: <ManageCoupon />,
+    },
+    {
+      path: "all-agreements",
+      element: <AllAgreements />,
+    },
+    {
+      path: "manage-members",
+      element: <ManageMembers />,
+    },
+    {
+      path: "agreement-requests",
+      // element: <AgreementRequests />,
+    },
+    {
+      path: "admin-profile",
+      // element: <AdminProfile />,
+    },
+  ],
+}
+
 ]);
