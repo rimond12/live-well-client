@@ -1,162 +1,203 @@
-import { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
+import { loadStripe } from "@stripe/stripe-js";
+import {
+  Elements,
+  useStripe,
+  useElements,
+  CardElement,
+} from "@stripe/react-stripe-js";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import Swal from "sweetalert2";
 
-const MakePayment = () => {
-  const { user } = useAuth();
+// Load Stripe outside component to avoid recreation
+const stripePromise = loadStripe(import.meta.env.VITE_PAYMENT_KEY);
+
+const PaymentForm = ({ agreement }) => {
+  const stripe = useStripe();
+  const elements = useElements();
   const axiosSecure = useAxiosSecure();
+  const { user } = useAuth();
 
-  const [agreement, setAgreement] = useState(null);
-  const [month, setMonth] = useState("");
+  const [clientSecret, setClientSecret] = useState("");
+  const [processing, setProcessing] = useState(false);
+  const [transactionId, setTransactionId] = useState("");
   const [couponCode, setCouponCode] = useState("");
-  const [discount, setDiscount] = useState(0);
-  const [finalAmount, setFinalAmount] = useState(0);
-  const [message, setMessage] = useState("");
-  const [loading, setLoading] = useState(false);
+  const [couponError, setCouponError] = useState("");
+  const [finalAmount, setFinalAmount] = useState(agreement?.rent || 0);
+  const [month, setMonth] = useState("");
 
-  // Load user's agreement on mount
   useEffect(() => {
-    if (user?.email) {
-      axiosSecure.get(`/agreements/${user.email}`)
-        .then(res => {
-          setAgreement(res.data);
-          setFinalAmount(res.data.rent); // শুরুতে final amount = rent
+    if (finalAmount > 0) {
+      axiosSecure
+        .post("/create-payment-intent", { amount: finalAmount })
+        .then((res) => {
+          setClientSecret(res.data.clientSecret);
         })
-        .catch(err => {
-          console.error(err);
-          setMessage("Failed to load agreement");
+        .catch(() => {
+          Swal.fire("Error", "Failed to create payment intent", "error");
         });
     }
-  }, [user, axiosSecure]);
+  }, [axiosSecure, finalAmount]);
 
-  // Apply coupon and calculate discount
-  const handleApplyCoupon = () => {
+  const applyCoupon = async () => {
     if (!couponCode.trim()) {
-      setMessage("Please enter a coupon code");
+      setCouponError("Please enter a coupon code.");
       return;
     }
 
-    setMessage("");
-    setLoading(true);
+    try {
+      const res = await axiosSecure.post("/verify-coupon", {
+        code: couponCode.trim(),
+        rent: agreement.rent,
+      });
 
-    axiosSecure.post("/validate-coupon", { couponCode: couponCode.trim() })
-      .then(res => {
-        if (res.data.valid) {
-          const discountAmount = (agreement.rent * res.data.discountPercentage) / 100;
-          setDiscount(res.data.discountPercentage);
-          setFinalAmount(agreement.rent - discountAmount);
-          setMessage(`Coupon applied! You get ${res.data.discountPercentage}% off`);
-        } else {
-          setMessage("Invalid coupon code");
-          setDiscount(0);
-          setFinalAmount(agreement.rent);
-        }
-      })
-      .catch(() => {
-        setMessage("Failed to validate coupon");
-        setDiscount(0);
+      if (res.data.valid) {
+        setFinalAmount(res.data.discountedAmount);
+        Swal.fire(
+          "Success",
+          `Coupon applied!\nNew amount: $${res.data.discountedAmount}`,
+          "success"
+        );
+        setCouponError("");
+      } else {
+        setCouponError(res.data.message || "Invalid or expired coupon.");
         setFinalAmount(agreement.rent);
-      })
-      .finally(() => setLoading(false));
+      }
+    } catch (err) {
+      console.error("Coupon verify:", err);
+      setCouponError("Server error while verifying coupon.");
+      setFinalAmount(agreement.rent);
+    }
   };
 
-  // Submit payment
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
     if (!month) {
-      setMessage("Please select a month");
+      Swal.fire("Warning", "Please select a month before payment", "warning");
       return;
     }
 
-    setLoading(true);
+    if (!stripe || !elements || !clientSecret) return;
 
-    const paymentData = {
-      memberEmail: user.email,
-      floorNo: agreement.floorNo,
-      blockName: agreement.blockName,
-      apartmentNo: agreement.apartmentNo,
-      rent: agreement.rent,
-      month,
-      couponCode: discount > 0 ? couponCode.trim() : null,
-      discountPercentage: discount,
-      finalAmount,
-      paymentDate: new Date().toISOString(),
-    };
+    const card = elements.getElement(CardElement);
+    if (!card) return;
 
-    axiosSecure.post("/payments", paymentData)
-      .then(res => {
-        if (res.data.success) {
-          setMessage("Payment successful! Thank you.");
-          setCouponCode("");
-          setDiscount(0);
-          setFinalAmount(agreement.rent);
-          setMonth("");
-        } else {
-          setMessage("Payment failed. Please try again.");
-        }
-      })
-      .catch(() => {
-        setMessage("Payment failed. Please try again.");
-      })
-      .finally(() => setLoading(false));
+    setProcessing(true);
+
+    const { error, paymentMethod } = await stripe.createPaymentMethod({
+      type: "card",
+      card,
+    });
+
+    if (error) {
+      Swal.fire("Error", error.message, "error");
+      setProcessing(false);
+      return;
+    }
+
+    const { paymentIntent, error: confirmError } =
+      await stripe.confirmCardPayment(clientSecret, {
+        payment_method: {
+          card,
+          billing_details: {
+            name: user?.displayName || "Anonymous",
+            email: user?.email || "Unknown",
+          },
+        },
+      });
+
+    if (confirmError) {
+      Swal.fire("Error", confirmError.message, "error");
+      setProcessing(false);
+      return;
+    }
+
+    if (paymentIntent.status === "succeeded") {
+      setTransactionId(paymentIntent.id);
+
+      const paymentData = {
+        email: user?.email,
+        name: user?.displayName,
+        agreementId: agreement._id,
+        apartmentId: agreement.apartmentId,
+        block_name: agreement.block_name,
+        apartment_no: agreement.apartment_no,
+        rent: agreement.rent,
+        paidAmount: finalAmount,
+        month, // **এখানে month যোগ করতে হবে**
+        transactionId: paymentIntent.id,
+        date: new Date(),
+        status: "paid",
+      };
+
+      const res = await axiosSecure.post("/payments", paymentData);
+
+      if (res.data?.data?.acknowledged && res.data?.data?.insertedId) {
+        Swal.fire("Success", "Payment successful!", "success");
+      } else {
+        Swal.fire("Error", "Payment recording failed", "error");
+      }
+    }
+
+    setProcessing(false);
   };
 
-  if (!agreement) {
-    return <p className="text-center mt-10">Loading your agreement info...</p>;
-  }
-
   return (
-    <div className="max-w-md mx-auto mt-10 p-6 bg-white shadow rounded">
-      <h2 className="text-2xl font-bold mb-4 text-indigo-600">💳 Make Payment</h2>
+    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
+      <h2 className="text-2xl font-bold mb-4 text-center">Make Payment</h2>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        {/* readonly fields for agreement info */}
-        <div>
-          <label className="block font-semibold">Member Email</label>
-          <input type="email" value={user.email} readOnly className="input input-bordered w-full" />
-        </div>
-        <div>
-          <label className="block font-semibold">Floor No</label>
-          <input type="text" value={agreement.floorNo} readOnly className="input input-bordered w-full" />
-        </div>
-        <div>
-          <label className="block font-semibold">Block Name</label>
-          <input type="text" value={agreement.blockName} readOnly className="input input-bordered w-full" />
-        </div>
-        <div>
-          <label className="block font-semibold">Apartment No</label>
-          <input type="text" value={agreement.apartmentNo} readOnly className="input input-bordered w-full" />
-        </div>
-        <div>
-          <label className="block font-semibold">Rent</label>
-          <input type="text" value={`$${agreement.rent}`} readOnly className="input input-bordered w-full" />
-        </div>
+      <div className="mb-4">
+        <p>
+          <strong>Block:</strong>{" "}
+          {agreement?.block_name || agreement?.blockName}
+        </p>
+        <p>
+          <strong>Apartment:</strong>{" "}
+          {agreement?.apartment_no || agreement?.apartmentNo}
+        </p>
 
-        {/* Month selection */}
-        <div>
-          <label className="block font-semibold" htmlFor="month">Select Month</label>
-          <select
-            id="month"
-            value={month}
-            onChange={(e) => setMonth(e.target.value)}
-            className="select select-bordered w-full"
-          >
-            <option value="">-- Select Month --</option>
-            {[
-              "January", "February", "March", "April", "May", "June",
-              "July", "August", "September", "October", "November", "December"
-            ].map(m => (
-              <option key={m} value={m}>{m}</option>
-            ))}
-          </select>
-        </div>
+        <p>
+          <strong>Original Rent:</strong> ${agreement?.rent}
+        </p>
+        <p>
+          <strong>Final Amount:</strong> ${finalAmount}
+        </p>
+      </div>
+      <div>
+        <label className="block font-semibold mb-1">Select Month</label>
+        <select
+          value={month}
+          onChange={(e) => setMonth(e.target.value)}
+          className="select select-bordered w-full"
+        >
+          <option value="">-- Select Month --</option>
+          {[
+            "January",
+            "February",
+            "March",
+            "April",
+            "May",
+            "June",
+            "July",
+            "August",
+            "September",
+            "October",
+            "November",
+            "December",
+          ].map((m) => (
+            <option key={m} value={m}>
+              {m}
+            </option>
+          ))}
+        </select>
+      </div>
 
-        {/* Coupon input and apply */}
-        <div>
-          <label className="block font-semibold" htmlFor="couponCode">Coupon Code (Optional)</label>
+      <div className="mb-4">
+        <label className="block font-semibold mb-1">Have a Coupon?</label>
+        <div className="flex gap-2">
           <input
-            id="couponCode"
             type="text"
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
@@ -165,44 +206,71 @@ const MakePayment = () => {
           />
           <button
             type="button"
-            onClick={handleApplyCoupon}
-            disabled={loading}
-            className="mt-2 btn btn-sm btn-primary"
+            onClick={applyCoupon}
+            className="btn btn-sm btn-secondary"
           >
-            Apply Coupon
+            Apply
           </button>
         </div>
+        {couponError && <p className="text-red-500 mt-1">{couponError}</p>}
+      </div>
 
-        {discount > 0 && (
-          <p className="text-green-600 font-semibold">Discount applied: {discount}% off</p>
-        )}
-
-        {/* Final amount */}
-        <div>
-          <label className="block font-semibold">Final Amount</label>
-          <input
-            type="text"
-            value={`$${finalAmount.toFixed(2)}`}
-            readOnly
-            className="input input-bordered w-full font-bold text-lg"
+      <form onSubmit={handleSubmit}>
+        <div className="mb-4">
+          <CardElement
+            options={{
+              style: {
+                base: {
+                  fontSize: "16px",
+                  color: "#424770",
+                  "::placeholder": {
+                    color: "#aab7c4",
+                  },
+                },
+                invalid: {
+                  color: "#9e2146",
+                },
+              },
+            }}
           />
         </div>
-
-        {/* Submit button */}
         <button
           type="submit"
-          disabled={loading}
-          className="btn btn-indigo w-full mt-4"
+          disabled={!stripe || !clientSecret || processing || transactionId}
+          className="btn btn-primary w-full"
         >
-          {loading ? "Processing..." : "Pay Now"}
+          {processing
+            ? "Processing..."
+            : transactionId
+            ? "Payment Done"
+            : `Pay $${finalAmount}`}
         </button>
       </form>
 
-      {message && (
-        <p className="mt-4 text-center text-red-600 font-semibold">{message}</p>
+      {transactionId && (
+        <p className="mt-4 text-green-600 font-semibold text-center">
+          Transaction successful! ID: {transactionId}
+        </p>
       )}
     </div>
   );
 };
 
-export default MakePayment;
+const MakePaymentWrapper = () => {
+  // তোমার আগের agreement data, এটা তোমার প্রপার(props) থেকে আসতে পারে বা API থেকে
+  const agreement = {
+    _id: "agreement-id",
+    apartmentId: "apartment-id",
+    block_name: "A",
+    apartment_no: "A-501",
+    rent: 12000,
+  };
+
+  return (
+    <Elements stripe={stripePromise}>
+      <PaymentForm agreement={agreement} />
+    </Elements>
+  );
+};
+
+export default MakePaymentWrapper;

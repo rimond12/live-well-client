@@ -16,6 +16,7 @@ import MyProfile from "../Pages/Dashboard/MyProfile";
 import Announcements from "../Pages/Dashboard/Announcements";
 import PaymentHistory from "../Pages/Dashboard/PaymentHistory";
 import ManageMembers from "../Pages/Dashboard/ManageMembers";
+import PrivateRoute from "../Context/PrivateRoute";
 
 export const router = createBrowserRouter([
   {
@@ -35,64 +36,67 @@ export const router = createBrowserRouter([
         Component: Login,
       },
       {
-        path:'apartments',
-        element:<ApartmentList></ApartmentList>
-      }
+        path: "apartments",
+        element: (
+          <PrivateRoute>
+            <ApartmentList></ApartmentList>
+          </PrivateRoute>
+        ),
+      },
     ],
   },
- {
-  path: "/dashboard",
-  element: <DashboardLayout />,
-  children: [
-    {
-      path: "",
-      element: <DashboardHome />,
-    },
-    {
-      path: "my-profile",
-      element: <MyProfile />,
-    },
-    {
-      path: "announcements",
-      element: <Announcements />,
-    },
-    {
-      path: "payment-history",
-      element: <PaymentHistory />,
-    },
-    {
-      path: "make-payment",
-      element: <MakePayment />,
-    },
-    {
-      path: "my-agreement",
-      element: <MyAgreement />,
-    },
-    {
-      path: "post-announcement",
-      element: <PostAnnouncement />,
-    },
-    {
-      path: "manage-coupons",
-      element: <ManageCoupon />,
-    },
-    {
-      path: "all-agreements",
-      element: <AllAgreements />,
-    },
-    {
-      path: "manage-members",
-      element: <ManageMembers />,
-    },
-    {
-      path: "agreement-requests",
-      // element: <AgreementRequests />,
-    },
-    {
-      path: "admin-profile",
-      // element: <AdminProfile />,
-    },
-  ],
-}
-
+  {
+    path: "/dashboard",
+    element: <DashboardLayout />,
+    children: [
+      {
+        path: "",
+        element: <DashboardHome />,
+      },
+      {
+        path: "my-profile",
+        element: <MyProfile />,
+      },
+      {
+        path: "announcements",
+        element: <Announcements />,
+      },
+      {
+        path: "payment-history",
+        element: <PaymentHistory />,
+      },
+      {
+        path: "make-payment",
+        element: <MakePayment />,
+      },
+      {
+        path: "my-agreement",
+        element: <MyAgreement />,
+      },
+      {
+        path: "post-announcement",
+        element: <PostAnnouncement />,
+      },
+      {
+        path: "manage-coupons",
+        element: <ManageCoupon />,
+      },
+      {
+        path: "all-agreements",
+        element: <AllAgreements />,
+      },
+      {
+        path: "manage-members",
+        element: <ManageMembers />,
+      },
+      {
+        path: "agreement-requests",
+        // element: <AgreementRequests />,
+      },
+      {
+        path: "admin-profile",
+        // element: <AdminProfile />,
+      },
+    ],
+  },
 ]);
