@@ -3,23 +3,27 @@ import { Link, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
+import axios from "axios";
+
+const imgbbAPIKey = import.meta.env.VITE_image_upload_key; // 🟡 Replace this with your actual key
 
 const Register = () => {
   const { createUser, updateUserProfile } = useAuth();
   const [error, setError] = useState("");
+  const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
 
   const handleRegister = async (e) => {
     e.preventDefault();
     const form = e.target;
     const name = form.name.value;
-    const photo = form.photo.value;
     const email = form.email.value;
     const password = form.password.value;
+    const photoFile = form.photo.files[0];
 
-    console.log("Form submitted:", email, name, password, photo);
+    if (!photoFile) return toast.error("Please upload a profile photo.");
 
-    // Password validation → toast use
+    // Password validation
     if (!/[A-Z]/.test(password)) {
       return toast.error("Must have at least one uppercase letter.");
     }
@@ -31,12 +35,25 @@ const Register = () => {
     }
 
     try {
+      setIsUploading(true);
+
+      // Upload photo to imgbb
+      const formData = new FormData();
+      formData.append("image", photoFile);
+
+      const imgbbRes = await axios.post(
+        `https://api.imgbb.com/1/upload?key=${imgbbAPIKey}`,
+        formData
+      );
+
+      const photoURL = imgbbRes.data.data.display_url;
+      console.log("Uploaded image URL:", photoURL);
+
+      // Create user with Firebase
       const result = await createUser(email, password);
       console.log("✅ Firebase created user:", result.user);
 
-      await updateUserProfile(name, photo);
-
-      // Success → SweetAlert
+      await updateUserProfile(name, photoURL);
       await Swal.fire("Success", "Account created successfully!", "success");
 
       navigate("/");
@@ -44,6 +61,8 @@ const Register = () => {
       console.error("❌ Register error:", err.message);
       setError(err.message);
       toast.error(err.message || "Something went wrong!");
+    } finally {
+      setIsUploading(false);
     }
   };
 
@@ -60,9 +79,9 @@ const Register = () => {
             className="w-full px-4 py-2 border rounded-lg"
           />
           <input
-            type="text"
+            type="file"
             name="photo"
-            placeholder="Photo URL"
+            accept="image/*"
             required
             className="w-full px-4 py-2 border rounded-lg"
           />
@@ -80,8 +99,12 @@ const Register = () => {
             required
             className="w-full px-4 py-2 border rounded-lg"
           />
-          <button type="submit" className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition">
-            Register
+          <button
+            type="submit"
+            disabled={isUploading}
+            className="w-full bg-black text-white py-2 rounded-lg hover:bg-gray-800 transition"
+          >
+            {isUploading ? "Uploading..." : "Register"}
           </button>
         </form>
         <p className="text-sm text-red-500 mt-2">{error}</p>

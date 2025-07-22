@@ -1,12 +1,12 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-import useAuth from "../../hooks/useAuth"; // ✅ Add this
+import useAuth from "../../hooks/useAuth";
 
 const PaymentHistory = () => {
   const [payments, setPayments] = useState([]);
   const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecure();
-  const { user } = useAuth(); // ✅ Get user email
+  const { user } = useAuth();
 
   useEffect(() => {
     if (!user?.email) return;
@@ -49,18 +49,18 @@ const PaymentHistory = () => {
           {payments.map((payment) => (
             <tr key={payment._id} className="hover:bg-indigo-50 transition">
               <td className="border border-indigo-300 p-3">
-                {new Date(payment.paymentDate).toLocaleDateString()}
+                {new Date(payment.date).toLocaleDateString()}
               </td>
               <td className="border border-indigo-300 p-3">{payment.month}</td>
               <td className="border border-indigo-300 p-3">
-                {payment.apartmentNo}
+                {payment.apartment_no}
               </td>
-              <td className="border border-indigo-300 p-3">{payment.blockName}</td>
+              <td className="border border-indigo-300 p-3">{payment.block_name}</td>
               <td className="border border-indigo-300 p-3 font-semibold">
-                ${payment.finalAmount}
+                ${payment.paidAmount}
               </td>
               <td className="border border-indigo-300 p-3 capitalize text-green-600 font-medium">
-                Paid
+                {payment.status}
               </td>
             </tr>
           ))}
