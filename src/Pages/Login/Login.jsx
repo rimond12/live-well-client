@@ -32,18 +32,18 @@ const Login = () => {
   const handleGoogle = () => {
     googleLogin()
       .then(async (result) => {
-         const user = result.user;
+        const user = result.user;
         console.log(result);
-          const userInfo = {
-        email: user.email,
-        role: 'user',
-        created_at: new Date().toISOString(),
-        last_log_in: new Date().toISOString()
+        const userInfo = {
+          displayName: user.displayName,
+          email: user.email,
+          role: "user",
+          created_at: new Date().toISOString(),
+          last_log_in: new Date().toISOString(),
+        };
 
-      }
-
-     const res = await axiosInstance.post('/users', userInfo)
-     console.log('user update info',res.data);
+        const res = await axiosInstance.post("/users", userInfo);
+        console.log("user update info", res.data);
         toast.success("Logged in with Google");
         navigate("/");
       })

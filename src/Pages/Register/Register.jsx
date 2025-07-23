@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
@@ -13,7 +13,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
-  const axiosInstance = useAxios()
+  const axiosInstance = useAxios();
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -43,15 +43,14 @@ const Register = () => {
 
       const userInfo = {
         email: email,
-        role: 'user',
+        role: "user",
         created_at: new Date().toISOString(),
-        last_log_in: new Date().toISOString()
+        last_log_in: new Date().toISOString(),
+        displayName: name, // এখানে displayName add করলাম
+      };
 
-      }
-
-      const userRes = await axiosInstance.post('/users', userInfo);
+      const userRes = await axiosInstance.post("/users", userInfo);
       console.log(userRes.data);
-      
 
       // Upload photo to imgbb
       const formData = new FormData();

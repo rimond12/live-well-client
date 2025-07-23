@@ -17,6 +17,7 @@ import Announcements from "../Pages/Dashboard/Announcements";
 import PaymentHistory from "../Pages/Dashboard/PaymentHistory";
 import ManageMembers from "../Pages/Dashboard/ManageMembers";
 import PrivateRoute from "../Context/PrivateRoute";
+import AgreementRequests from "../Pages/Dashboard/AgreementRequests";
 
 export const router = createBrowserRouter([
   {
@@ -91,7 +92,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "agreement-requests",
-        // element: <AgreementRequests />,
+        element: <AgreementRequests />,
       },
       {
         path: "admin-profile",
