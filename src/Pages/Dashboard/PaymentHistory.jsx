@@ -15,7 +15,6 @@ const PaymentHistory = () => {
     axiosSecure
       .get("/payments", { params: { email: user.email } })
       .then((res) => {
-        console.log(res.data);
         setPayments(res.data);
       })
       .catch((err) => {
@@ -26,46 +25,59 @@ const PaymentHistory = () => {
       });
   }, [user?.email, axiosSecure]);
 
-  if (loading) return <p>Loading payment history...</p>;
-  if (payments.length === 0) return <p>No payments found.</p>;
+  if (loading)
+    return <p className="text-center mt-10 text-indigo-700 font-semibold">Loading payment history...</p>;
+  if (payments.length === 0)
+    return <p className="text-center mt-10 text-gray-600 font-semibold">No payments found.</p>;
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white rounded shadow">
-      <h2 className="text-2xl font-bold mb-6 text-indigo-700">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+      <h2 className="text-2xl font-bold mb-6 text-indigo-700 text-center">
         Payment History
       </h2>
-      <table className="min-w-full border-collapse text-center">
-        <thead>
-          <tr className="bg-indigo-200 text-indigo-900 uppercase text-sm font-semibold tracking-wide">
-            <th className="p-3 border border-indigo-300">Date</th>
-            <th className="p-3 border border-indigo-300">Month</th>
-            <th className="p-3 border border-indigo-300">Apartment</th>
-            <th className="p-3 border border-indigo-300">Block</th>
-            <th className="p-3 border border-indigo-300">Amount</th>
-            <th className="p-3 border border-indigo-300">Status</th>
-          </tr>
-        </thead>
-        <tbody>
-          {payments.map((payment) => (
-            <tr key={payment._id} className="hover:bg-indigo-50 transition">
-              <td className="border border-indigo-300 p-3">
-                {new Date(payment.date).toLocaleDateString()}
-              </td>
-              <td className="border border-indigo-300 p-3">{payment.month}</td>
-              <td className="border border-indigo-300 p-3">
-                {payment.apartment_no}
-              </td>
-              <td className="border border-indigo-300 p-3">{payment.block_name}</td>
-              <td className="border border-indigo-300 p-3 font-semibold">
-                ${payment.paidAmount}
-              </td>
-              <td className="border border-indigo-300 p-3 capitalize text-green-600 font-medium">
-                {payment.status}
-              </td>
+
+      {/* Scrollable container */}
+      <div className="overflow-x-auto rounded-xl shadow bg-white">
+        <table className="min-w-[700px] w-full text-sm text-center border-collapse">
+          <thead className="bg-indigo-200 text-indigo-900 uppercase font-semibold">
+            <tr>
+              <th className="p-3 border border-indigo-300">Date</th>
+              <th className="p-3 border border-indigo-300">Month</th>
+              <th className="p-3 border border-indigo-300">Apartment</th>
+              <th className="p-3 border border-indigo-300">Block</th>
+              <th className="p-3 border border-indigo-300">Amount</th>
+              <th className="p-3 border border-indigo-300">Status</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {payments.map((payment) => (
+              <tr
+                key={payment._id}
+                className="hover:bg-indigo-50 transition-colors"
+              >
+                <td className="p-3 border border-indigo-300 whitespace-nowrap">
+                  {new Date(payment.date).toLocaleDateString()}
+                </td>
+                <td className="p-3 border border-indigo-300 whitespace-nowrap">
+                  {payment.month}
+                </td>
+                <td className="p-3 border border-indigo-300 whitespace-nowrap">
+                  {payment.apartment_no}
+                </td>
+                <td className="p-3 border border-indigo-300 whitespace-nowrap">
+                  {payment.block_name}
+                </td>
+                <td className="p-3 border border-indigo-300 font-semibold text-green-700 whitespace-nowrap">
+                  ${payment.paidAmount}
+                </td>
+                <td className="p-3 border border-indigo-300 capitalize text-green-600 font-medium whitespace-nowrap">
+                  {payment.status}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   );
 };

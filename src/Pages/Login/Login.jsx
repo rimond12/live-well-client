@@ -3,11 +3,13 @@ import { Link, useNavigate } from "react-router";
 import { FaGoogle } from "react-icons/fa";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
+import useAxios from "../../hooks/useAxios";
 
 const Login = () => {
   const { signIn, googleLogin } = useAuth();
   const [error, setError] = useState("");
   const navigate = useNavigate();
+  const axiosInstance = useAxios();
 
   const handleLogin = (e) => {
     e.preventDefault();
@@ -17,7 +19,7 @@ const Login = () => {
     signIn(email, password)
       .then((result) => {
         console.log(result);
-        
+
         toast.success("Login successful!");
         navigate("/");
       })
@@ -29,7 +31,19 @@ const Login = () => {
 
   const handleGoogle = () => {
     googleLogin()
-      .then(() => {
+      .then(async (result) => {
+         const user = result.user;
+        console.log(result);
+          const userInfo = {
+        email: user.email,
+        role: 'user',
+        created_at: new Date().toISOString(),
+        last_log_in: new Date().toISOString()
+
+      }
+
+     const res = await axiosInstance.post('/users', userInfo)
+     console.log('user update info',res.data);
         toast.success("Logged in with Google");
         navigate("/");
       })

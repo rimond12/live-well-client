@@ -1,9 +1,10 @@
-import React, { useState } from "react";
+import React, {  useState } from "react";
 import { Link, useNavigate } from "react-router";
 import Swal from "sweetalert2";
 import toast from "react-hot-toast";
 import useAuth from "../../hooks/useAuth";
 import axios from "axios";
+import useAxios from "../../hooks/useAxios";
 
 const imgbbAPIKey = import.meta.env.VITE_image_upload_key; // 🟡 Replace this with your actual key
 
@@ -12,6 +13,7 @@ const Register = () => {
   const [error, setError] = useState("");
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
+  const axiosInstance = useAxios()
 
   const handleRegister = async (e) => {
     e.preventDefault();
@@ -36,6 +38,20 @@ const Register = () => {
 
     try {
       setIsUploading(true);
+
+      // update user info in database
+
+      const userInfo = {
+        email: email,
+        role: 'user',
+        created_at: new Date().toISOString(),
+        last_log_in: new Date().toISOString()
+
+      }
+
+      const userRes = await axiosInstance.post('/users', userInfo);
+      console.log(userRes.data);
+      
 
       // Upload photo to imgbb
       const formData = new FormData();
