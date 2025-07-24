@@ -66,7 +66,7 @@ const ManageMembers = () => {
           {members.map((member) => (
             <tr key={member._id} className="hover:bg-indigo-50 transition">
               <td className="border border-indigo-300 p-3">
-                {member.name || member.userName || "No Name"}
+                {member.name || member.displayName || "No Name"}
               </td>
               <td className="border border-indigo-300 p-3 truncate max-w-xs">
                 {member.email}

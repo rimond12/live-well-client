@@ -8,7 +8,7 @@ const useUserRole = () => {
   
   const axiosSecure = useAxiosSecure();
 
-  const [role, setRole] = useState("guest");
+  const [role, setRole] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -29,7 +29,7 @@ const useUserRole = () => {
     }
   }, [user, authLoading, axiosSecure]);
 
-  return [role, loading];
+  return {role, loading};
 };
 
 export default useUserRole;

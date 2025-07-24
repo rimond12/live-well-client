@@ -52,7 +52,7 @@ const MyAgreement = () => {
 
       <div className="space-y-4 text-gray-700 text-lg">
         <p>
-          <span className="font-semibold">👤 Name:</span> {agreement.userName}
+          <span className="font-semibold">👤 Name:</span> {user.displayName}
         </p>
         <p>
           <span className="font-semibold">📧 Email:</span> {agreement.userEmail}

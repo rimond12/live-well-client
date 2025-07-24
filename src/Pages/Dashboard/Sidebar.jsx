@@ -16,7 +16,7 @@ import {
 import useUserRole from "../../hooks/useUserRole";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
-  const [role, loading] = useUserRole();
+  const {role, loading} = useUserRole();
   console.log(role);
   return (
     <>

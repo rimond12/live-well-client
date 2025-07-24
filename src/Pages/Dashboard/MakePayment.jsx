@@ -126,7 +126,7 @@ const PaymentForm = ({ agreement }) => {
         apartment_no: agreement.apartment_no,
         rent: agreement.rent,
         paidAmount: finalAmount,
-        month, // **এখানে month যোগ করতে হবে**
+        month,
         transactionId: paymentIntent.id,
         date: new Date(),
         status: "paid",
@@ -150,14 +150,17 @@ const PaymentForm = ({ agreement }) => {
 
       <div className="mb-4">
         <p>
-          <strong>Block:</strong>{" "}
-          {agreement?.block_name || agreement?.blockName}
+          <strong>Email:</strong> {agreement?.userEmail}
         </p>
         <p>
-          <strong>Apartment:</strong>{" "}
-          {agreement?.apartment_no || agreement?.apartmentNo}
+          <strong>Block:</strong> {agreement?.blockName}
         </p>
-
+        <p>
+          <strong>Apartment:</strong> {agreement?.apartmentNo}
+        </p>
+        <p>
+          <strong>Floor:</strong> {agreement?.floorNo}
+        </p>
         <p>
           <strong>Original Rent:</strong> ${agreement?.rent}
         </p>
@@ -165,6 +168,7 @@ const PaymentForm = ({ agreement }) => {
           <strong>Final Amount:</strong> ${finalAmount}
         </p>
       </div>
+
       <div>
         <label className="block font-semibold mb-1">Select Month</label>
         <select
@@ -257,14 +261,23 @@ const PaymentForm = ({ agreement }) => {
 };
 
 const MakePaymentWrapper = () => {
-  // তোমার আগের agreement data, এটা তোমার প্রপার(props) থেকে আসতে পারে বা API থেকে
-  const agreement = {
-    _id: "agreement-id",
-    apartmentId: "apartment-id",
-    block_name: "A",
-    apartment_no: "A-501",
-    rent: 12000,
-  };
+  const { user } = useAuth();
+  const axiosSecure = useAxiosSecure();
+  const [agreement, setAgreement] = useState(null);
+
+  useEffect(() => {
+    if (user?.email) {
+      axiosSecure
+        .get(`/agreement?email=${user.email}`)
+        .then((res) => setAgreement(res.data))
+        .catch(() =>
+          Swal.fire("Error", "Failed to load agreement info", "error")
+        );
+    }
+  }, [user, axiosSecure]);
+
+  if (!agreement)
+    return <p className="text-center mt-10">Loading agreement...</p>;
 
   return (
     <Elements stripe={stripePromise}>
