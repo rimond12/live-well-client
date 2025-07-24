@@ -3,8 +3,11 @@ import { Outlet } from "react-router";
 import Sidebar from "../Pages/Dashboard/Sidebar";
 import { Menu } from "lucide-react";
 
+
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
+  
+  
 
   return (
     <div className="flex h-screen overflow-hidden">

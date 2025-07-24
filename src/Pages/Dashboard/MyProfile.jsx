@@ -4,6 +4,8 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 
 const MyProfile = () => {
   const { user } = useAuth();
+  // console.log(user.email);
+  
   const axiosSecure = useAxiosSecure();
   const [agreement, setAgreement] = useState(null);
   const [loading, setLoading] = useState(true);

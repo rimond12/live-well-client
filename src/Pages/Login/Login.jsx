@@ -6,7 +6,9 @@ import useAuth from "../../hooks/useAuth";
 import useAxios from "../../hooks/useAxios";
 
 const Login = () => {
-  const { signIn, googleLogin } = useAuth();
+  const { signIn, googleLogin,user } = useAuth();
+  console.log(user);
+  
   const [error, setError] = useState("");
   const navigate = useNavigate();
   const axiosInstance = useAxios();

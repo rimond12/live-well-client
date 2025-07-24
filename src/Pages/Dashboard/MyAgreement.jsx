@@ -1,9 +1,12 @@
 import { useEffect, useState } from "react";
-import useAuth from "../../hooks/useAuth";
+
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import useAuth from "../../hooks/useAuth";
 
 const MyAgreement = () => {
   const { user } = useAuth();
+  console.log(user);
+
   const axiosSecure = useAxiosSecure();
   const [agreement, setAgreement] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -34,7 +37,9 @@ const MyAgreement = () => {
   if (!agreement || !agreement._id) {
     return (
       <div className="flex justify-center items-center mt-20">
-        <p className="text-xl font-semibold text-red-500">❌ No Agreement Found</p>
+        <p className="text-xl font-semibold text-red-500">
+          ❌ No Agreement Found
+        </p>
       </div>
     );
   }
