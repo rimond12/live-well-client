@@ -20,6 +20,8 @@ import AgreementRequests from "../Pages/Dashboard/AgreementRequests";
 import PrivateRoute from "../routes/PrivateRoute";
 import Forbidden from "../Pages/Forbidden/Forbidden";
 import AdminRoute from "../routes/AdminRoute";
+import MemberRoute from "../routes/MemberRoute";
+import AdminProfile from "../Pages/Dashboard/AdminProfile";
 
 export const router = createBrowserRouter([
   {
@@ -70,15 +72,27 @@ export const router = createBrowserRouter([
       },
       {
         path: "payment-history",
-        element: <PaymentHistory />,
+        element: (
+          <MemberRoute>
+            <PaymentHistory />
+          </MemberRoute>
+        ),
       },
       {
         path: "make-payment",
-        element: <MakePayment />,
+        element: (
+          <MemberRoute>
+            <MakePayment />
+          </MemberRoute>
+        ),
       },
       {
         path: "my-agreement",
-        element: <MyAgreement />,
+        element: (
+          <MemberRoute>
+            <MyAgreement />
+          </MemberRoute>
+        ),
       },
       {
         path: "post-announcement",
@@ -98,7 +112,11 @@ export const router = createBrowserRouter([
       },
       {
         path: "all-agreements",
-        element: <AllAgreements />,
+        element: (
+          <AdminRoute>
+            <AllAgreements />
+          </AdminRoute>
+        ),
       },
       {
         path: "manage-members",
@@ -118,7 +136,12 @@ export const router = createBrowserRouter([
       },
       {
         path: "admin-profile",
-        // element: <AdminProfile />,
+        element: (
+          <AdminRoute>
+            {" "}
+            <AdminProfile />
+          </AdminRoute>
+        ),
       },
     ],
   },

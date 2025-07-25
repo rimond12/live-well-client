@@ -16,7 +16,7 @@ import {
 import useUserRole from "../../hooks/useUserRole";
 
 const Sidebar = ({ isOpen, setIsOpen }) => {
-  const {role, loading} = useUserRole();
+  const { role, loading } = useUserRole();
   console.log(role);
   return (
     <>
@@ -61,153 +61,158 @@ const Sidebar = ({ isOpen, setIsOpen }) => {
             Dashboard Home
           </NavLink>
 
-          <NavLink
-            to="/dashboard/my-profile"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaUser className="text-indigo-700" />
-            My Profile
-          </NavLink>
+          { !loading && (role === "member" || role === "user") &&
+            <>
+              <NavLink
+                to="/dashboard/my-profile"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaUser className="text-indigo-700" />
+                My Profile
+              </NavLink>
 
-          <NavLink
-            to="/dashboard/my-agreement"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaFileContract className="text-indigo-700" />
-            My Agreement
-          </NavLink>
+              <NavLink
+                to="/dashboard/announcements"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaBullhorn className="text-indigo-700" />
+                Announcements
+              </NavLink>
+            </>
+          }
 
-          <NavLink
-            to="/dashboard/make-payment"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaMoneyCheckAlt className="text-indigo-700" />
-            Make Payment
-          </NavLink>
+          {/* member role */}
+          {!loading && role === "member" && (
+            <>
+              <NavLink
+                to="/dashboard/my-agreement"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaFileContract className="text-indigo-700" />
+                My Agreement
+              </NavLink>
 
-          <NavLink
-            to="/dashboard/announcements"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaBullhorn className="text-indigo-700" />
-            Announcements
-          </NavLink>
+              <NavLink
+                to="/dashboard/make-payment"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaMoneyCheckAlt className="text-indigo-700" />
+                Make Payment
+              </NavLink>
 
-          <NavLink
-            to="/dashboard/payment-history"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaHistory className="text-indigo-700" />
-            Payment History
-          </NavLink>
+              <NavLink
+                to="/dashboard/payment-history"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaHistory className="text-indigo-700" />
+                Payment History
+              </NavLink>
+            </>
+          )}
 
           {/* admin role */}
 
-          { !loading && role === 'admin' &&
+          {!loading && role === "admin" && (
             <>
-          
-          <NavLink
-            to="/dashboard/admin-profile"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaUserShield className="text-indigo-700" />
-            Admin Profile
-          </NavLink>
-          <NavLink
-            to="/dashboard/agreement-requests"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaClipboardList className="text-indigo-700" />
-            Agreement Requests
-          </NavLink>
-           <NavLink
-            to="/dashboard/manage-members"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaUsersCog className="text-indigo-700" />
-            Manage Members
-          </NavLink>
-            <NavLink
-            to="/dashboard/manage-coupons"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaTicketAlt className="text-indigo-700" />
-            Manage Coupons
-          </NavLink>
-          <NavLink
-            to="/dashboard/post-announcement"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaBullhorn className="text-indigo-700" />
-            Post Announcement
-          </NavLink>
-          <NavLink
-            to="/dashboard/all-agreements"
-            className={({ isActive }) =>
-              `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
-                isActive ? "bg-indigo-300 font-medium" : ""
-              }`
-            }
-            onClick={() => setIsOpen(false)}
-          >
-            <FaClipboardList className="text-indigo-700" />
-            All Agreements
-          </NavLink>
-          
-          
-          
-          </>
-          }
+              <NavLink
+                to="/dashboard/admin-profile"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaUserShield className="text-indigo-700" />
+                Admin Profile
+              </NavLink>
+              <NavLink
+                to="/dashboard/agreement-requests"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaClipboardList className="text-indigo-700" />
+                Agreement Requests
+              </NavLink>
+              <NavLink
+                to="/dashboard/manage-members"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaUsersCog className="text-indigo-700" />
+                Manage Members
+              </NavLink>
+              <NavLink
+                to="/dashboard/manage-coupons"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaTicketAlt className="text-indigo-700" />
+                Manage Coupons
+              </NavLink>
+              <NavLink
+                to="/dashboard/post-announcement"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaBullhorn className="text-indigo-700" />
+                Post Announcement
+              </NavLink>
+              <NavLink
+                to="/dashboard/all-agreements"
+                className={({ isActive }) =>
+                  `flex items-center gap-3 px-4 py-2 rounded hover:bg-indigo-200 transition ${
+                    isActive ? "bg-indigo-300 font-medium" : ""
+                  }`
+                }
+                onClick={() => setIsOpen(false)}
+              >
+                <FaClipboardList className="text-indigo-700" />
+                All Agreements
+              </NavLink>
+            </>
+          )}
         </nav>
       </aside>
 
