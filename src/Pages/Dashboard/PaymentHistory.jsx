@@ -14,63 +14,73 @@ const PaymentHistory = () => {
     setLoading(true);
     axiosSecure
       .get("/payments", { params: { email: user.email } })
-      .then((res) => {
-        setPayments(res.data);
-      })
-      .catch((err) => {
-        console.error("Error fetching payment history:", err);
-      })
-      .finally(() => {
-        setLoading(false);
-      });
+      .then((res) => setPayments(res.data))
+      .catch((err) => console.error("Error fetching payment history:", err))
+      .finally(() => setLoading(false));
   }, [user?.email, axiosSecure]);
 
   if (loading)
-    return <p className="text-center mt-10 text-indigo-700 font-semibold">Loading payment history...</p>;
+    return (
+      <p className="text-center mt-10 text-[#a38966] font-semibold text-lg">
+        Loading payment history...
+      </p>
+    );
+
   if (payments.length === 0)
-    return <p className="text-center mt-10 text-gray-600 font-semibold">No payments found.</p>;
+    return (
+      <p className="text-center mt-10 text-gray-500 font-semibold text-lg">
+        No payments found.
+      </p>
+    );
 
   return (
-    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-      <h2 className="text-2xl font-bold mb-6 text-indigo-700 text-center">
+    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <h2 className="text-3xl font-bold mb-8 text-center text-black">
         Payment History
       </h2>
 
-      {/* Scrollable container */}
-      <div className="overflow-x-auto rounded-xl shadow bg-white">
-        <table className="min-w-[700px] w-full text-sm text-center border-collapse">
-          <thead className="bg-indigo-200 text-indigo-900 uppercase font-semibold">
+      <div className="overflow-x-auto rounded-xl shadow-lg border border-gray-200">
+        <table className="min-w-[700px] w-full text-sm text-center">
+          <thead className="bg-[#a38966] text-white uppercase text-sm">
             <tr>
-              <th className="p-3 border border-indigo-300">Date</th>
-              <th className="p-3 border border-indigo-300">Month</th>
-              <th className="p-3 border border-indigo-300">Apartment</th>
-              <th className="p-3 border border-indigo-300">Block</th>
-              <th className="p-3 border border-indigo-300">Amount</th>
-              <th className="p-3 border border-indigo-300">Status</th>
+              <th className="p-3">Date</th>
+              <th className="p-3">Month</th>
+              <th className="p-3">Apartment</th>
+              <th className="p-3">Block</th>
+              <th className="p-3">Amount</th>
+              <th className="p-3">Status</th>
             </tr>
           </thead>
-          <tbody>
-            {payments.map((payment) => (
+          <tbody className="divide-y divide-gray-200">
+            {payments.map((payment, index) => (
               <tr
                 key={payment._id}
-                className="hover:bg-indigo-50 transition-colors"
+                className={`transition-colors ${
+                  index % 2 === 0 ? "bg-white" : "bg-gray-50"
+                } hover:bg-[#f5f1ea]`}
               >
-                <td className="p-3 border border-indigo-300 whitespace-nowrap">
+                <td className="p-3 whitespace-nowrap text-gray-700">
                   {new Date(payment.date).toLocaleDateString()}
                 </td>
-                <td className="p-3 border border-indigo-300 whitespace-nowrap">
+                <td className="p-3 whitespace-nowrap text-gray-700">
                   {payment.month}
                 </td>
-                <td className="p-3 border border-indigo-300 whitespace-nowrap">
+                <td className="p-3 whitespace-nowrap text-gray-700">
                   {payment.apartment_no}
                 </td>
-                <td className="p-3 border border-indigo-300 whitespace-nowrap">
+                <td className="p-3 whitespace-nowrap text-gray-700">
                   {payment.block_name}
                 </td>
-                <td className="p-3 border border-indigo-300 font-semibold text-green-700 whitespace-nowrap">
+                <td className="p-3 font-semibold text-green-600 whitespace-nowrap">
                   ${payment.paidAmount}
                 </td>
-                <td className="p-3 border border-indigo-300 capitalize text-green-600 font-medium whitespace-nowrap">
+                <td
+                  className={`p-3 font-medium capitalize whitespace-nowrap ${
+                    payment.status === "paid"
+                      ? "text-green-600"
+                      : "text-red-500"
+                  }`}
+                >
                   {payment.status}
                 </td>
               </tr>

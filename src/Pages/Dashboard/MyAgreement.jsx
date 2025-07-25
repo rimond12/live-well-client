@@ -1,12 +1,9 @@
 import { useEffect, useState } from "react";
-
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
 
 const MyAgreement = () => {
   const { user } = useAuth();
-  console.log(user);
-
   const axiosSecure = useAxiosSecure();
   const [agreement, setAgreement] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -29,7 +26,9 @@ const MyAgreement = () => {
   if (loading) {
     return (
       <div className="flex justify-center items-center mt-20">
-        <p className="text-lg font-semibold text-gray-700">Loading...</p>
+        <p className="text-lg font-semibold text-[#a38966] animate-pulse">
+          Loading...
+        </p>
       </div>
     );
   }
@@ -45,40 +44,45 @@ const MyAgreement = () => {
   }
 
   return (
-    <div className="max-w-xl mx-auto mt-12 p-8 bg-white rounded-lg shadow-lg border border-gray-200">
-      <h2 className="text-3xl font-bold text-indigo-600 mb-6 flex items-center gap-2">
-        📄 My Agreement
+    <div className="max-w-xl mx-auto mt-12 p-8 bg-white rounded-xl shadow-xl border border-gray-300">
+      <h2 className="text-3xl font-bold text-black mb-6 flex items-center gap-2">
+        📄 <span className="text-[#a38966]">My Agreement</span>
       </h2>
 
-      <div className="space-y-4 text-gray-700 text-lg">
+      <div className="space-y-4 text-gray-800 text-lg">
         <p>
-          <span className="font-semibold">👤 Name:</span> {user.displayName}
+          <span className="font-semibold text-black">👤 Name:</span>{" "}
+          <span className="text-[#a38966]">{user.displayName}</span>
         </p>
         <p>
-          <span className="font-semibold">📧 Email:</span> {agreement.userEmail}
+          <span className="font-semibold text-black">📧 Email:</span>{" "}
+          <span className="text-[#a38966]">{agreement.userEmail}</span>
         </p>
         <p>
-          <span className="font-semibold">🏠 Apartment No:</span>{" "}
-          {agreement.apartmentNo}
+          <span className="font-semibold text-black">🏠 Apartment No:</span>{" "}
+          <span className="text-[#a38966]">{agreement.apartmentNo}</span>
         </p>
         <p>
-          <span className="font-semibold">🏢 Block:</span> {agreement.blockName}
+          <span className="font-semibold text-black">🏢 Block:</span>{" "}
+          <span className="text-[#a38966]">{agreement.blockName}</span>
         </p>
         <p>
-          <span className="font-semibold">📶 Floor:</span> {agreement.floorNo}
+          <span className="font-semibold text-black">📶 Floor:</span>{" "}
+          <span className="text-[#a38966]">{agreement.floorNo}</span>
         </p>
         <p>
-          <span className="font-semibold">💰 Rent:</span> ${agreement.rent}
+          <span className="font-semibold text-black">💰 Rent:</span>{" "}
+          <span className="text-[#a38966]">৳{agreement.rent}</span>
         </p>
         <p>
-          <span className="font-semibold">📌 Status:</span>{" "}
+          <span className="font-semibold text-black">📌 Status:</span>{" "}
           <span
-            className={`font-bold ${
+            className={`font-bold px-3 py-1 rounded-full capitalize ${
               agreement.status === "pending"
-                ? "text-yellow-600"
+                ? "bg-yellow-100 text-yellow-700"
                 : agreement.status === "accepted"
-                ? "text-green-600"
-                : "text-red-600"
+                ? "bg-green-100 text-green-700"
+                : "bg-red-100 text-red-700"
             }`}
           >
             {agreement.status}

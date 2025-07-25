@@ -10,7 +10,6 @@ import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 
-// Load Stripe outside component to avoid recreation
 const stripePromise = loadStripe(import.meta.env.VITE_PAYMENT_KEY);
 
 const PaymentForm = ({ agreement }) => {
@@ -56,7 +55,7 @@ const PaymentForm = ({ agreement }) => {
         setFinalAmount(res.data.discountedAmount);
         Swal.fire(
           "Success",
-          `Coupon applied!\nNew amount: $${res.data.discountedAmount}`,
+          `Coupon applied! New amount: $${res.data.discountedAmount}`,
           "success"
         );
         setCouponError("");
@@ -65,7 +64,6 @@ const PaymentForm = ({ agreement }) => {
         setFinalAmount(agreement.rent);
       }
     } catch (err) {
-      console.error("Coupon verify:", err);
       setCouponError("Server error while verifying coupon.");
       setFinalAmount(agreement.rent);
     }
@@ -86,7 +84,7 @@ const PaymentForm = ({ agreement }) => {
 
     setProcessing(true);
 
-    const { error, paymentMethod } = await stripe.createPaymentMethod({
+    const { error } = await stripe.createPaymentMethod({
       type: "card",
       card,
     });
@@ -122,8 +120,8 @@ const PaymentForm = ({ agreement }) => {
         name: user?.displayName,
         agreementId: agreement._id,
         apartmentId: agreement.apartmentId,
-        block_name: agreement.blockName, // <-- change here
-        apartment_no: agreement.apartmentNo, // <-- change here
+        block_name: agreement.blockName,
+        apartment_no: agreement.apartmentNo,
         rent: agreement.rent,
         paidAmount: finalAmount,
         month,
@@ -145,10 +143,12 @@ const PaymentForm = ({ agreement }) => {
   };
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white shadow-md rounded-lg mt-6">
-      <h2 className="text-2xl font-bold mb-4 text-center">Make Payment</h2>
+    <div className="max-w-lg mx-auto mt-10 bg-white rounded-xl shadow-xl border border-gray-200 p-8">
+      <h2 className="text-3xl font-bold mb-6 text-center text-black">
+        Make Payment
+      </h2>
 
-      <div className="mb-4">
+      <div className="space-y-2 text-gray-700 mb-6">
         <p>
           <strong>Email:</strong> {agreement?.userEmail}
         </p>
@@ -164,17 +164,17 @@ const PaymentForm = ({ agreement }) => {
         <p>
           <strong>Original Rent:</strong> ${agreement?.rent}
         </p>
-        <p>
-          <strong>Final Amount:</strong> ${finalAmount}
+        <p className="text-lg font-semibold text-[#a38966]">
+          Final Amount: ${finalAmount}
         </p>
       </div>
 
-      <div>
+      <div className="mb-5">
         <label className="block font-semibold mb-1">Select Month</label>
         <select
           value={month}
           onChange={(e) => setMonth(e.target.value)}
-          className="select select-bordered w-full"
+          className="select select-bordered w-full focus:border-[#a38966] focus:ring-[#a38966]"
         >
           <option value="">-- Select Month --</option>
           {[
@@ -198,7 +198,7 @@ const PaymentForm = ({ agreement }) => {
         </select>
       </div>
 
-      <div className="mb-4">
+      <div className="mb-5">
         <label className="block font-semibold mb-1">Have a Coupon?</label>
         <div className="flex gap-2">
           <input
@@ -206,42 +206,38 @@ const PaymentForm = ({ agreement }) => {
             value={couponCode}
             onChange={(e) => setCouponCode(e.target.value)}
             placeholder="Enter coupon code"
-            className="input input-bordered w-full"
+            className="input input-bordered w-full focus:border-[#a38966] focus:ring-[#a38966]"
           />
           <button
             type="button"
             onClick={applyCoupon}
-            className="btn btn-sm btn-secondary"
+            className="btn bg-[#a38966] text-white hover:bg-black transition"
           >
             Apply
           </button>
         </div>
-        {couponError && <p className="text-red-500 mt-1">{couponError}</p>}
+        {couponError && <p className="text-red-500 mt-2">{couponError}</p>}
       </div>
 
-      <form onSubmit={handleSubmit}>
-        <div className="mb-4">
-          <CardElement
-            options={{
-              style: {
-                base: {
-                  fontSize: "16px",
-                  color: "#424770",
-                  "::placeholder": {
-                    color: "#aab7c4",
-                  },
-                },
-                invalid: {
-                  color: "#9e2146",
-                },
+      <form onSubmit={handleSubmit} className="space-y-5">
+        <CardElement
+          options={{
+            style: {
+              base: {
+                fontSize: "16px",
+                color: "#000",
+                "::placeholder": { color: "#aab7c4" },
               },
-            }}
-          />
-        </div>
+              invalid: { color: "#9e2146" },
+            },
+          }}
+          className="p-3 border rounded-lg focus:border-[#a38966]"
+        />
+
         <button
           type="submit"
           disabled={!stripe || !clientSecret || processing || transactionId}
-          className="btn btn-primary w-full"
+          className="w-full py-2 rounded-lg bg-[#a38966] text-white hover:bg-black transition font-semibold"
         >
           {processing
             ? "Processing..."
@@ -277,7 +273,9 @@ const MakePaymentWrapper = () => {
   }, [user, axiosSecure]);
 
   if (!agreement)
-    return <p className="text-center mt-10">Loading agreement...</p>;
+    return (
+      <p className="text-center mt-10 text-[#a38966]">Loading agreement...</p>
+    );
 
   return (
     <Elements stripe={stripePromise}>

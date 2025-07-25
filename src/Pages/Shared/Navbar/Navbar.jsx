@@ -5,6 +5,7 @@ import { MdDashboard } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
+import "./style.css"
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);

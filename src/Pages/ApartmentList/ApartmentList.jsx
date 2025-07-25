@@ -58,14 +58,23 @@ const ApartmentList = () => {
     };
 
     try {
-      await axiosSecure.post("/agreements", agreementData);
+      const res = await axiosSecure.post("/agreements", agreementData);
       Swal.fire("Success!", "Agreement submitted successfully!", "success");
     } catch (err) {
-      Swal.fire(
-        "Error!",
-        err?.response?.data?.message || "Failed to submit agreement.",
-        "error"
-      );
+      const status = err?.response?.status;
+      const message =
+        err?.response?.data?.message || "Failed to submit agreement.";
+
+      if (status === 409) {
+        // Already requested same apartment (duplicate)
+        Swal.fire("Already Exists", message, "info");
+      } else if (status === 400) {
+        // কোনো ভ্যালিডেশন ইস্যু হলে
+        Swal.fire("Invalid Request", message, "warning");
+      } else {
+        // অন্য সব অপ্রত্যাশিত error
+        Swal.fire("Error!", message, "error");
+      }
     }
   };
 
@@ -103,7 +112,7 @@ const ApartmentList = () => {
         />
         <button
           onClick={handleSearch}
-          className="btn bg-[#a38966] text-white hover:bg-[#8b7b58] transition duration-300 px-8"
+          className="btn bg-black text-white border-2 border-transparent hover:bg-white hover:text-black hover:border-[#a38966] transition duration-300 px-8"
         >
           Search
         </button>
