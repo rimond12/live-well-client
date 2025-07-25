@@ -1,37 +1,79 @@
 import React from "react";
+import { MapContainer, TileLayer, Marker, Popup } from "react-leaflet";
+import "leaflet/dist/leaflet.css";
+import { motion } from "framer-motion";
+import Lottie from "lottie-react";
+import locationAnimation from "../../../lotties/UO9kFTQ7Ir.json";
 
 const LocationSection = () => {
-  return (
-    <section className="py-16 px-6 md:px-20 bg-gray-50">
-      <div className="max-w-6xl mx-auto grid md:grid-cols-2 gap-10 items-center my-15">
-        {/* Text Content */}
-        <div>
-          <h2 className="text-4xl font-bold text-gray-800 mb-4">
-            📍 Our Location
-          </h2>
-          <p className="text-lg text-gray-700 mb-4">
-            LiveWell Apartments is located at the heart of Dhaka city — near
-            Gulshan-2. It’s easily accessible by bus, rickshaw, and car. With
-            nearby restaurants, parks, and schools, our location is perfect for
-            families and professionals.
-          </p>
-          <p className="text-md text-gray-600">
-            Address: House #15, Road #3, Gulshan 2, Dhaka 1212, Bangladesh
-          </p>
-        </div>
+  const position = [23.7543, 90.417];
 
-        {/* Google Map Embed */}
-        <div className="w-full h-80 md:h-96 rounded-xl overflow-hidden shadow-lg">
-          <iframe
-            title="LiveWell Apartment Map"
-            src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3651.774048151768!2d90.4170160758905!3d23.754312588082904!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3755c7a79f1bfb09%3A0xf89cf95c1f83189b!2sGulshan%202%2C%20Dhaka!5e0!3m2!1sen!2sbd!4v1625678172345!5m2!1sen!2sbd"
-            width="100%"
-            height="100%"
-            style={{ border: 0 }}
-            allowFullScreen=""
-            loading="lazy"
-          ></iframe>
-        </div>
+  return (
+    <section className="py-20 px-0 relative">
+      <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8">
+        <motion.div
+          className="relative bg-[#111111] p-10 flex flex-col justify-center text-white"
+          initial={{ opacity: 0, x: -100 }}
+          whileInView={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, ease: "easeOut" }}
+        >
+          <div className="relative z-10 space-y-6">
+            <div
+              style={{
+                width: 120,
+                height: 120,
+                background:
+                  "radial-gradient(circle at center, #c7b39a40, transparent 70%)",
+                borderRadius: "50%",
+                padding: "10px",
+              }}
+            >
+              <Lottie animationData={locationAnimation} loop={true} />
+            </div>
+
+            <h2 className="text-4xl font-bold">
+              Our <span className="text-[#c7b39a]">Location</span>
+            </h2>
+            <p className="text-lg text-gray-300 leading-relaxed">
+              LiveWell Apartments is located at the heart of Dhaka city — near
+              Gulshan-2. It’s easily accessible by bus, rickshaw, and car. With
+              nearby restaurants, parks, and schools, our location is perfect
+              for families and professionals.
+            </p>
+            <p className="text-md font-semibold text-gray-400">
+              Address:{" "}
+              <span className="text-[#c7b39a]">
+                House #15, Road #3, Gulshan 2, Dhaka 1212, Bangladesh
+              </span>
+            </p>
+          </div>
+        </motion.div>
+
+        <motion.div
+          className="relative rounded-xl overflow-hidden shadow-2xl"
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+        >
+          <MapContainer
+            center={position}
+            zoom={15}
+            scrollWheelZoom={false}
+            className="w-full h-80 md:h-full rounded-xl"
+          >
+            <TileLayer
+              attribution='&copy; <a href="https://osm.org/copyright">OpenStreetMap</a> contributors'
+              url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
+            />
+            <Marker position={position}>
+              <Popup>
+                <div className="font-semibold text-gray-700">
+                  LiveWell Apartments <br /> Gulshan 2, Dhaka
+                </div>
+              </Popup>
+            </Marker>
+          </MapContainer>
+        </motion.div>
       </div>
     </section>
   );

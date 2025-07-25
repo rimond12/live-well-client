@@ -1,5 +1,7 @@
 import { useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
+import { motion } from "framer-motion";
+import { FaBullhorn } from "react-icons/fa";
 
 const PostAnnouncement = () => {
   const [title, setTitle] = useState("");
@@ -19,16 +21,25 @@ const PostAnnouncement = () => {
     setMessage(null);
 
     try {
-      const res = await axiosSecure.post("/announcements", { title, description });
+      const res = await axiosSecure.post("/announcements", {
+        title,
+        description,
+      });
       if (res.data.insertedId) {
-        setMessage({ type: "success", text: "Announcement posted successfully!" });
+        setMessage({
+          type: "success",
+          text: "Announcement posted successfully!",
+        });
         setTitle("");
         setDescription("");
       } else {
         setMessage({ type: "error", text: "Failed to post announcement." });
       }
     } catch (error) {
-      setMessage({ type: "error", text: "An error occurred. Try again later." });
+      setMessage({
+        type: "error",
+        text: "An error occurred. Try again later.",
+      });
       console.error(error);
     } finally {
       setLoading(false);
@@ -36,28 +47,40 @@ const PostAnnouncement = () => {
   };
 
   return (
-    <div className="max-w-xl mx-auto mt-10 p-6 bg-white rounded shadow-md">
-      <h2 className="text-2xl font-bold mb-6 text-indigo-700">📢 Post Announcement</h2>
+    <motion.div
+      initial={{ opacity: 0, y: 40 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.6 }}
+      className="max-w-2xl mx-auto mt-14 bg-white rounded-2xl shadow-xl border border-[#c7b39a]/40 p-8"
+    >
+      <h2 className="text-3xl font-bold text-[#111111] flex items-center gap-3 mb-6">
+        <FaBullhorn className="text-[#c7b39a]" /> Post Announcement
+      </h2>
 
       {message && (
         <div
-          className={`mb-4 px-4 py-2 rounded ${
-            message.type === "success" ? "bg-green-100 text-green-700" : "bg-red-100 text-red-700"
+          className={`mb-4 px-4 py-3 rounded-lg font-semibold ${
+            message.type === "success"
+              ? "bg-green-100 text-green-700"
+              : "bg-red-100 text-red-700"
           }`}
         >
           {message.text}
         </div>
       )}
 
-      <form onSubmit={handleSubmit} className="space-y-4">
+      <form onSubmit={handleSubmit} className="space-y-5">
         <div>
-          <label htmlFor="title" className="block font-semibold mb-1">
+          <label
+            htmlFor="title"
+            className="block font-semibold text-gray-700 mb-2"
+          >
             Title
           </label>
           <input
             id="title"
             type="text"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-indigo-500 focus:ring-1 focus:ring-indigo-400"
+            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-[#c7b39a] focus:ring focus:ring-[#c7b39a]/40 outline-none"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Enter announcement title"
@@ -66,13 +89,16 @@ const PostAnnouncement = () => {
         </div>
 
         <div>
-          <label htmlFor="description" className="block font-semibold mb-1">
+          <label
+            htmlFor="description"
+            className="block font-semibold text-gray-700 mb-2"
+          >
             Description
           </label>
           <textarea
             id="description"
-            className="w-full border border-gray-300 rounded px-3 py-2 focus:outline-indigo-500 focus:ring-1 focus:ring-indigo-400"
             rows={5}
+            className="w-full px-4 py-2 rounded-md border border-gray-300 focus:border-[#c7b39a] focus:ring focus:ring-[#c7b39a]/40 outline-none"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
             placeholder="Enter announcement details"
@@ -83,14 +109,14 @@ const PostAnnouncement = () => {
         <button
           type="submit"
           disabled={loading}
-          className={`w-full py-2 rounded bg-indigo-600 text-white font-semibold hover:bg-indigo-700 transition ${
+          className={`w-full py-3 rounded-md bg-[#111111] text-white font-semibold hover:bg-[#333333] transition ${
             loading ? "opacity-70 cursor-not-allowed" : ""
           }`}
         >
           {loading ? "Posting..." : "Post Announcement"}
         </button>
       </form>
-    </div>
+    </motion.div>
   );
 };
 

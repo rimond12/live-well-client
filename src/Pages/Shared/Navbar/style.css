@@ -1,0 +1,9 @@
+.nav-link {
+  text-decoration: none;
+  color: inherit;
+  
+}
+
+.nav-link.active {
+  border-bottom: 2px solid #ccbead; /* Active হলে নিচে border হবে */
+}

@@ -2,14 +2,13 @@ import { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
+import { motion } from "framer-motion";
 
 const ManageCoupon = () => {
-
   const [coupons, setCoupons] = useState([]);
   const [form, setForm] = useState({ code: "", discount: "" });
   const axiosSecure = useAxiosSecure();
 
-  // Load all coupons
   const fetchCoupons = async () => {
     try {
       const res = await axiosSecure.get("/coupons");
@@ -23,115 +22,135 @@ const ManageCoupon = () => {
     fetchCoupons();
   }, []);
 
-  // Handle new coupon add
- const handleSubmit = async (e) => {
-  e.preventDefault();
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    const discount = parseFloat(form.discount);
 
-  const discount = parseFloat(form.discount);
-
-  if (!form.code || isNaN(discount) || discount <= 0 || discount > 100) {
-    Swal.fire("Invalid", "Please enter valid coupon and discount (1-100%)", "warning");
-    return;
-  }
-
-  try {
-    await axiosSecure.post("/coupons", {
-      code: form.code.toUpperCase(),
-      discountPercentage: discount,
-      active: true,
-    });
-    Swal.fire("Success", "Coupon added successfully!", "success");
-    setForm({ code: "", discount: "" });
-    fetchCoupons();
-  } catch (err) {
-    console.error("Add coupon failed:", err);
-    Swal.fire("Error", "Failed to add coupon", "error");
-  }
-};
-
-const handleDelete = async (id) => {
-  const confirm = await Swal.fire({
-    title: "Are you sure?",
-    text: "You want to delete this coupon?",
-    icon: "warning",
-    showCancelButton: true,
-    confirmButtonText: "Yes, delete it!",
-  });
-
-  if (confirm.isConfirmed) {
-    try {
-      await axiosSecure.delete(`/coupons/${id}`);
-      fetchCoupons();
-      Swal.fire("Deleted!", "Coupon has been deleted.", "success");
-    } catch (err) {
-      Swal.fire("Error", "Failed to delete coupon", "error");
+    if (!form.code || isNaN(discount) || discount <= 0 || discount > 100) {
+      Swal.fire(
+        "Invalid",
+        "Enter valid coupon and discount (1-100%)",
+        "warning"
+      );
+      return;
     }
-  }
-};
 
+    try {
+      await axiosSecure.post("/coupons", {
+        code: form.code.toUpperCase(),
+        discountPercentage: discount,
+        active: true,
+      });
+      Swal.fire("Success", "Coupon added successfully!", "success");
+      setForm({ code: "", discount: "" });
+      fetchCoupons();
+    } catch (err) {
+      Swal.fire("Error", "Failed to add coupon", "error");
+    }
+  };
+
+  const handleDelete = async (id) => {
+    const confirm = await Swal.fire({
+      title: "Are you sure?",
+      text: "You want to delete this coupon?",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Yes, delete it!",
+    });
+
+    if (confirm.isConfirmed) {
+      try {
+        await axiosSecure.delete(`/coupons/${id}`);
+        fetchCoupons();
+        Swal.fire("Deleted!", "Coupon has been deleted.", "success");
+      } catch (err) {
+        Swal.fire("Error", "Failed to delete coupon", "error");
+      }
+    }
+  };
 
   return (
-    <div className="max-w-5xl mx-auto p-6 bg-white rounded shadow mt-10">
-      <h2 className="text-2xl font-bold mb-6 text-indigo-700">
-        🏱 Manage Coupons
-      </h2>
+    <section className="max-w-6xl mx-auto p-6 md:p-10">
+      <motion.h2
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+        className="text-3xl font-bold text-[#c7b39a] mb-8"
+      >
+        🏷 Manage Coupons
+      </motion.h2>
 
-      {/* Coupon Add Form */}
-      <form onSubmit={handleSubmit} className="flex flex-col md:flex-row items-center gap-4 mb-8">
+      {/* Add Coupon Form */}
+      <form
+        onSubmit={handleSubmit}
+        className="flex flex-col md:flex-row gap-4 mb-8 bg-white shadow-lg rounded-xl p-5 border border-[#c7b39a]"
+      >
         <input
           type="text"
           placeholder="Coupon Code"
-          className="input input-bordered w-full md:w-1/3"
+          className="input input-bordered flex-1 border-gray-300 rounded-md focus:ring-[#c7b39a]"
           value={form.code}
           onChange={(e) => setForm({ ...form, code: e.target.value })}
         />
         <input
           type="number"
           placeholder="Discount %"
-          className="input input-bordered w-full md:w-1/3"
+          className="input input-bordered flex-1 border-gray-300 rounded-md focus:ring-[#c7b39a]"
           value={form.discount}
           onChange={(e) => setForm({ ...form, discount: e.target.value })}
         />
-        <button type="submit" className="btn btn-primary">
+        <button
+          type="submit"
+          className="px-6 py-2 bg-[#111111] text-white rounded-md hover:bg-[#333333] transition"
+        >
           Add Coupon
         </button>
       </form>
 
-      {/* Coupon List */}
-      <table className="table w-full border border-gray-300">
-        <thead className="bg-indigo-100">
-          <tr>
-            <th className="border p-2">Code</th>
-            <th className="border p-2">Discount (%)</th>
-            <th className="border p-2">Actions</th>
-          </tr>
-        </thead>
-        <tbody>
-          {coupons.length > 0 ? (
-            coupons.map((coupon) => (
-              <tr key={coupon._id} className="text-center">
-                <td className="border p-2 font-mono font-semibold">{coupon.code}</td>
-                <td className="border p-2">{coupon.discount}%</td>
-                <td className="border p-2">
-                  <button
-                    className="btn btn-sm btn-error"
-                    onClick={() => handleDelete(coupon._id)}
-                  >
-                    <FaTrash className="text-white" />
-                  </button>
+      {/* Responsive Table */}
+      <div className="overflow-x-auto shadow-lg rounded-xl border border-[#c7b39a]">
+        <table className="min-w-full text-center">
+          <thead className="bg-[#111111] text-[#c7b39a] uppercase text-sm font-semibold">
+            <tr>
+              <th className="p-3 whitespace-nowrap">Code</th>
+              <th className="p-3 whitespace-nowrap">Discount (%)</th>
+              <th className="p-3 whitespace-nowrap">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {coupons.length > 0 ? (
+              coupons.map((coupon, idx) => (
+                <tr
+                  key={coupon._id}
+                  className={`${
+                    idx % 2 === 0 ? "bg-gray-50" : "bg-white"
+                  } hover:bg-[#f9f7f4] transition`}
+                >
+                  <td className="p-3 font-mono font-semibold text-gray-700">
+                    {coupon.code}
+                  </td>
+                  <td className="p-3 text-gray-700">{coupon.discount}%</td>
+                  <td className="p-3">
+                    <button
+                      className="bg-red-600 hover:bg-red-700 text-white px-4 py-1 rounded-md transition"
+                      onClick={() => handleDelete(coupon._id)}
+                    >
+                      <FaTrash />
+                    </button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={3} className="p-6 text-gray-500">
+                  No coupons available.
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={3} className="text-center py-4 text-gray-600">
-                No coupons available.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </table>
-    </div>
+            )}
+          </tbody>
+        </table>
+      </div>
+    </section>
   );
 };
 

@@ -18,7 +18,7 @@ const Announcements = () => {
         {announcements.map((item) => (
           <div key={item._id} className="border rounded-xl p-4 shadow bg-white">
             <h3 className="text-xl font-bold">{item.title}</h3>
-            <p className="mt-2 text-gray-700">{item.message}</p>
+            <p className="mt-2 text-gray-700">{item.description}</p>
             <p className="mt-3 text-sm text-gray-500">
               {new Date(item.date).toLocaleString()}
             </p>

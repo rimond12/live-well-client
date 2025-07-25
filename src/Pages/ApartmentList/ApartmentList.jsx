@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import useAuth from "../../hooks/useAuth";
 import ApartmentCard from "./ApartmentCard";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
-// import toast from "react-hot-toast"; // Optional toast
+import Swal from "sweetalert2";
 
 const ApartmentList = () => {
   const { user } = useAuth();
@@ -28,8 +28,7 @@ const ApartmentList = () => {
       setApartments(res.data.apartments);
       setTotal(res.data.total);
     } catch (err) {
-      console.error("API error:", err.message);
-      // toast.error("Failed to fetch apartments");
+      Swal.fire("Error!", "Failed to fetch apartments", "error");
     }
   };
 
@@ -38,12 +37,12 @@ const ApartmentList = () => {
   }, [currentPage, minRent, maxRent]);
 
   const handleSearch = () => {
-    setCurrentPage(1); // reset to page 1 on new search
+    setCurrentPage(1);
   };
 
   const handleAgreement = async (apartment) => {
     if (!user?.email) {
-      alert("Please log in first.");
+      Swal.fire("Login Required", "Please log in first.", "warning");
       return;
     }
 
@@ -58,14 +57,15 @@ const ApartmentList = () => {
       date: new Date().toISOString(),
     };
 
-    console.log("Submitting agreement data:", agreementData);
-
     try {
       await axiosSecure.post("/agreements", agreementData);
-      alert("Agreement submitted successfully!");
+      Swal.fire("Success!", "Agreement submitted successfully!", "success");
     } catch (err) {
-      console.error(err);
-      alert(err?.response?.data?.message || "Failed to submit agreement.");
+      Swal.fire(
+        "Error!",
+        err?.response?.data?.message || "Failed to submit agreement.",
+        "error"
+      );
     }
   };
 
@@ -80,34 +80,42 @@ const ApartmentList = () => {
   };
 
   return (
-    <div className="max-w-6xl mx-auto py-10">
-      <h2 className="text-3xl font-semibold mb-6 text-center">
+    <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+      <h2 className="text-4xl font-extrabold mb-10 text-center text-[#a38966] drop-shadow-lg">
         Available Apartments
       </h2>
 
       {/* Rent Search */}
-      <div className="flex flex-wrap gap-4 justify-center mb-6">
+      <div className="flex flex-wrap justify-center gap-4 mb-10">
         <input
           type="number"
           placeholder="Min Rent"
           value={minRent}
           onChange={(e) => setMinRent(e.target.value)}
-          className="input input-bordered"
+          className="input input-bordered border-[#a38966] focus:ring-[#a38966] focus:border-[#a38966] w-40 sm:w-48"
         />
         <input
           type="number"
           placeholder="Max Rent"
           value={maxRent}
           onChange={(e) => setMaxRent(e.target.value)}
-          className="input input-bordered"
+          className="input input-bordered border-[#a38966] focus:ring-[#a38966] focus:border-[#a38966] w-40 sm:w-48"
         />
-        <button onClick={handleSearch} className="btn btn-primary">
+        <button
+          onClick={handleSearch}
+          className="btn bg-[#a38966] text-white hover:bg-[#8b7b58] transition duration-300 px-8"
+        >
           Search
         </button>
       </div>
 
       {/* Apartment Cards */}
-      <div className="grid md:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-8">
+        {apartments.length === 0 && (
+          <p className="text-center col-span-full text-gray-600 font-semibold text-lg">
+            No apartments found.
+          </p>
+        )}
         {apartments.map((apt) => (
           <ApartmentCard
             key={apt._id}
@@ -118,67 +126,73 @@ const ApartmentList = () => {
       </div>
 
       {/* Pagination */}
-      <div className="flex justify-center mt-6 items-center gap-2">
-        <button
-          onClick={goToPrevPage}
-          disabled={currentPage === 1}
-          className={`btn btn-sm ${
-            currentPage === 1 ? "btn-disabled" : "btn-outline"
-          }`}
-        >
-          {/* Left Arrow */}
-          <svg
-            className="h-4 w-4 inline-block mr-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-          Prev
-        </button>
-
-        {[...Array(totalPages)].map((_, index) => (
+      {totalPages > 1 && (
+        <div className="flex justify-center mt-12 items-center gap-3 flex-wrap">
           <button
-            key={index}
+            onClick={goToPrevPage}
+            disabled={currentPage === 1}
             className={`btn btn-sm ${
-              currentPage === index + 1 ? "btn-primary" : "btn-outline"
-            }`}
-            onClick={() => setCurrentPage(index + 1)}
+              currentPage === 1
+                ? "btn-disabled bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-[#a38966] text-white hover:bg-[#8b7b58]"
+            } transition duration-300 flex items-center gap-1 px-4`}
           >
-            {index + 1}
+            <svg
+              className="h-4 w-4 inline-block"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
+            </svg>
+            Prev
           </button>
-        ))}
 
-        <button
-          onClick={goToNextPage}
-          disabled={currentPage === totalPages}
-          className={`btn btn-sm ${
-            currentPage === totalPages ? "btn-disabled" : "btn-outline"
-          }`}
-        >
-          Next
-          {/* Right Arrow */}
-          <svg
-            className="h-4 w-4 inline-block ml-1"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
+          {[...Array(totalPages)].map((_, index) => (
+            <button
+              key={index}
+              className={`btn btn-sm px-4 ${
+                currentPage === index + 1
+                  ? "bg-[#a38966] text-white shadow-lg"
+                  : "btn-outline text-[#a38966] hover:bg-[#8b7b58] hover:text-white"
+              } transition duration-300`}
+              onClick={() => setCurrentPage(index + 1)}
+            >
+              {index + 1}
+            </button>
+          ))}
+
+          <button
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages}
+            className={`btn btn-sm ${
+              currentPage === totalPages
+                ? "btn-disabled bg-gray-300 text-gray-500 cursor-not-allowed"
+                : "bg-[#a38966] text-white hover:bg-[#8b7b58]"
+            } transition duration-300 flex items-center gap-1 px-4`}
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
-      </div>
+            Next
+            <svg
+              className="h-4 w-4 inline-block"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
+              />
+            </svg>
+          </button>
+        </div>
+      )}
     </div>
   );
 };

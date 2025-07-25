@@ -54,14 +54,21 @@ const MyProfile = () => {
 
       {/* Agreement Info */}
       {role === "member" && agreement ? (
-        <div className="bg-gray-100 p-5 rounded-lg shadow-inner space-y-2">
+        <div className="bg-gray-100 p-5 rounded-lg shadow-inner space-y-2 flex flex-col items-center">
           <h3 className="text-xl font-semibold mb-3 text-green-700">
             Rented Apartment Info
           </h3>
           <p>
             <strong>Agreement Accept Date:</strong>{" "}
-            {agreement.acceptDate || "N/A"}
+            {agreement.date
+              ? new Date(agreement.date).toLocaleDateString("en-GB", {
+                  day: "2-digit",
+                  month: "long",
+                  year: "numeric",
+                })
+              : "N/A"}
           </p>
+
           <p>
             <strong>Floor No:</strong> {agreement.floorNo}
           </p>

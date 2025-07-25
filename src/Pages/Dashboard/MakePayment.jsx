@@ -122,8 +122,8 @@ const PaymentForm = ({ agreement }) => {
         name: user?.displayName,
         agreementId: agreement._id,
         apartmentId: agreement.apartmentId,
-        block_name: agreement.block_name,
-        apartment_no: agreement.apartment_no,
+        block_name: agreement.blockName, // <-- change here
+        apartment_no: agreement.apartmentNo, // <-- change here
         rent: agreement.rent,
         paidAmount: finalAmount,
         month,

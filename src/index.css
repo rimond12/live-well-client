@@ -2,3 +2,13 @@
 @plugin "daisyui"{
   themes: light --default
 }
+
+
+
+.leaflet-container {
+  z-index: 0 !important; /* map container সবসময় নিচে */
+}
+.leaflet-pane {
+  z-index: 0 !important; /* marker & popup নিচে */
+}
+
