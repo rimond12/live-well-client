@@ -2,6 +2,7 @@ import React from "react";
 import useAuth from "../hooks/useAuth";
 import useUserRole from "../hooks/useUserRole";
 import { Navigate, useLocation } from "react-router";
+import Loading from "../Pages/Loading/Loading";
 
 const AdminRoute = ({ children }) => {
   const { user, loading: authLoading } = useAuth();
@@ -10,7 +11,7 @@ const AdminRoute = ({ children }) => {
 
   // এখন দুই loading একসাথে handle করি
   if (authLoading || roleLoading || role === null) {
-    return <div>Loading...</div>;
+    return <Loading></Loading>;
   }
 
   if (!user) {

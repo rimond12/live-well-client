@@ -5,8 +5,6 @@ import { Menu } from "lucide-react";
 
 const DashboardLayout = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
-
-  // Lock scroll when sidebar is open on mobile
   useEffect(() => {
     if (isSidebarOpen) {
       document.body.style.overflow = "hidden";
@@ -18,8 +16,6 @@ const DashboardLayout = () => {
   return (
     <div className="flex h-screen overflow-hidden bg-indigo-50">
       {" "}
-      {/* light indigo bg */}
-      {/* Sidebar overlay on mobile */}
       <div
         className={`fixed inset-0 bg-black bg-opacity-40 z-40 md:hidden transition-opacity duration-300 ${
           isSidebarOpen

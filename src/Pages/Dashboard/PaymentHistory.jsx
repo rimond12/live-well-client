@@ -1,32 +1,30 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
+import Loading from "../Loading/Loading";
 
 const PaymentHistory = () => {
-  const [payments, setPayments] = useState([]);
-  const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (!user?.email) return;
+  // Fetch payments using React Query
+  const { data: payments = [], isLoading } = useQuery({
+    queryKey: ["paymentHistory", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get("/payments", {
+        params: { email: user.email },
+      });
+      return res.data;
+    },
+  });
 
-    setLoading(true);
-    axiosSecure
-      .get("/payments", { params: { email: user.email } })
-      .then((res) => setPayments(res.data))
-      .catch((err) => console.error("Error fetching payment history:", err))
-      .finally(() => setLoading(false));
-  }, [user?.email, axiosSecure]);
-
-  if (loading)
+  if (isLoading)
     return (
-      <p className="text-center mt-10 text-[#a38966] font-semibold text-lg">
-        Loading payment history...
-      </p>
+     <Loading></Loading>
     );
 
-  if (payments.length === 0)
+  if (!payments.length)
     return (
       <p className="text-center mt-10 text-gray-500 font-semibold text-lg">
         No payments found.

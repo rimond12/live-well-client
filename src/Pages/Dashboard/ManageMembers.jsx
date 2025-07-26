@@ -1,25 +1,25 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import Loading from "../Loading/Loading";
 
 const ManageMembers = () => {
-  const [members, setMembers] = useState([]);
-  const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecure();
 
-  const fetchMembers = () => {
-    setLoading(true);
-    axiosSecure
-      .get("/members")
-      .then((res) => setMembers(res.data))
-      .catch((err) => console.error(err))
-      .finally(() => setLoading(false));
-  };
-
-  useEffect(() => {
-    fetchMembers();
-  }, []);
+  const {
+    data: members = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["members"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/members");
+      return res.data;
+    },
+  });
 
   const handleRemove = (memberId) => {
     Swal.fire({
@@ -36,8 +36,8 @@ const ManageMembers = () => {
           .patch(`/members/${memberId}/remove`)
           .then((res) => {
             if (res.data.success) {
-              setMembers((prev) => prev.filter((m) => m._id !== memberId));
               Swal.fire("Removed!", "Member is now a normal user.", "success");
+              refetch(); 
             }
           })
           .catch(() =>
@@ -47,10 +47,15 @@ const ManageMembers = () => {
     });
   };
 
-  if (loading)
+  if (isLoading)
     return (
-      <p className="text-center mt-10 text-lg font-semibold text-[#c7b39a] animate-pulse">
-        Loading members...
+      <Loading></Loading>
+    );
+
+  if (isError)
+    return (
+      <p className="text-center mt-10 font-semibold text-red-500 text-xl">
+        Error loading members.
       </p>
     );
 

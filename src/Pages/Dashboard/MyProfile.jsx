@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useUserRole from "../../hooks/useUserRole";
@@ -8,27 +9,16 @@ const MyProfile = () => {
   const { role, loading: roleLoading } = useUserRole();
   const axiosSecure = useAxiosSecure();
 
-  const [agreement, setAgreement] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const { data: agreement, isLoading } = useQuery({
+    queryKey: ["userAgreement", user?.email],
+    enabled: !!user?.email && role === "member",
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/agreements/user/${user.email}`);
+      return res.data;
+    },
+  });
 
-  useEffect(() => {
-    if (user?.email && role === "member") {
-      axiosSecure
-        .get(`/agreements/user/${user.email}`)
-        .then((res) => {
-          setAgreement(res.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error("Error fetching agreement:", err);
-          setLoading(false);
-        });
-    } else {
-      setLoading(false);
-    }
-  }, [user, role, axiosSecure]);
-
-  if (loading || roleLoading)
+  if (isLoading || roleLoading)
     return (
       <div className="flex justify-center items-center h-screen">
         <p className="text-lg font-semibold text-[#a38966] animate-pulse">

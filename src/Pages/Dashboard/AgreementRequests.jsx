@@ -1,46 +1,57 @@
-import { useEffect, useState } from "react";
+import React from "react";
+import { useQuery, useQueryClient } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import Loading from "../Loading/Loading";
 
 const AgreementRequests = () => {
-  const [requests, setRequests] = useState([]);
-  const [loading, setLoading] = useState(true);
   const axiosSecure = useAxiosSecure();
+  const queryClient = useQueryClient();
 
-  const fetchRequests = () => {
-    setLoading(true);
-    axiosSecure
-      .get("/agreement/pending")
-      .then((res) => {
-        setRequests(Array.isArray(res.data) ? res.data : []);
-        setLoading(false);
-      })
-      .catch(() => setLoading(false));
-  };
+ 
+  const {
+    data: requests = [],
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["agreementRequests"],
+    queryFn: async () => {
+      const res = await axiosSecure.get("/agreement/pending");
+      return Array.isArray(res.data) ? res.data : [];
+    },
+  });
 
-  useEffect(() => {
-    fetchRequests();
-  }, [axiosSecure]);
 
-  const handleAccept = (id, userEmail) => {
-    axiosSecure.patch(`/agreements/${id}/accept`).then(() => {
+  const handleAccept = async (id, userEmail) => {
+    try {
+      await axiosSecure.patch(`/agreements/${id}/accept`);
       Swal.fire("Accepted!", `${userEmail}'s agreement accepted`, "success");
-      setRequests((prev) => prev.filter((req) => req._id !== id));
-    });
+      queryClient.invalidateQueries(["agreementRequests"]);
+    } catch (error) {
+      Swal.fire("Error!", "Failed to accept agreement.", "error");
+    }
   };
 
-  const handleReject = (id, userEmail) => {
-    axiosSecure.patch(`/agreements/${id}/reject`).then(() => {
+  const handleReject = async (id, userEmail) => {
+    try {
+      await axiosSecure.patch(`/agreements/${id}/reject`);
       Swal.fire("Rejected!", `${userEmail}'s agreement rejected`, "info");
-      setRequests((prev) => prev.filter((req) => req._id !== id));
-    });
+      queryClient.invalidateQueries(["agreementRequests"]);
+    } catch (error) {
+      Swal.fire("Error!", "Failed to reject agreement.", "error");
+    }
   };
 
-  if (loading)
+  if (isLoading)
     return (
-      <p className="text-center mt-10 text-lg font-semibold text-[#c7b39a] animate-pulse">
-        Loading agreement requests...
+      <Loading></Loading>
+    );
+
+  if (isError)
+    return (
+      <p className="text-center mt-10 font-semibold text-red-500 text-xl">
+        Error loading agreement requests.
       </p>
     );
 
@@ -81,9 +92,7 @@ const AgreementRequests = () => {
             {requests.map((req, idx) => (
               <tr
                 key={req._id}
-                className={`${
-                  idx % 2 === 0 ? "bg-gray-50" : "bg-white"
-                } hover:bg-[#f9f7f4] transition`}
+                className={`${idx % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-[#f9f7f4] transition`}
               >
                 <td className="p-3 font-medium text-gray-700">
                   {req.userName || req.userEmail.split("@")[0]}

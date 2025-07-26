@@ -1,35 +1,27 @@
-import { useEffect, useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useAuth from "../../hooks/useAuth";
+import Loading from "../Loading/Loading";
 
 const MyAgreement = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
-  const [agreement, setAgreement] = useState(null);
-  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    if (user?.email) {
-      axiosSecure
-        .get(`/agreements/${user.email}`)
-        .then((res) => {
-          setAgreement(res.data);
-          setLoading(false);
-        })
-        .catch((err) => {
-          console.error(err);
-          setLoading(false);
-        });
-    }
-  }, [user, axiosSecure]);
+  // Fetch agreement data using React Query
+  const { data: agreement, isLoading } = useQuery({
+    queryKey: ["userAgreement", user?.email],
+    enabled: !!user?.email,
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/agreements/${user.email}`);
+      return res.data;
+    },
+  });
 
-  if (loading) {
+  if (isLoading) {
     return (
-      <div className="flex justify-center items-center mt-20">
-        <p className="text-lg font-semibold text-[#a38966] animate-pulse">
-          Loading...
-        </p>
-      </div>
+      <>
+      <Loading></Loading>
+      </>
     );
   }
 

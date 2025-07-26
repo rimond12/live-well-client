@@ -1,4 +1,5 @@
-import React, { useEffect, useState } from "react";
+import React from "react";
+import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "./../../hooks/useAxiosSecure";
 import useAuth from "./../../hooks/useAuth";
 import { motion } from "framer-motion";
@@ -16,26 +17,38 @@ import {
   Legend,
   ResponsiveContainer,
 } from "recharts";
+import Loading from "../Loading/Loading";
 
 const COLORS = ["#4CAF50", "#FF5252"];
 
 const AdminProfile = () => {
-  const [stats, setStats] = useState(null);
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
 
-  useEffect(() => {
-    if (user?.email) {
-      axiosSecure
-        .get(`/admin/stats?email=${user.email}`)
-        .then((res) => setStats(res.data))
-        .catch((err) => console.error(err));
-    }
-  }, [axiosSecure, user]);
+  const {
+    data: stats,
+    isLoading,
+    isError,
+  } = useQuery({
+    queryKey: ["adminStats", user?.email],
+    queryFn: async () => {
+      const res = await axiosSecure.get(`/admin/stats?email=${user.email}`);
+      return res.data;
+    },
+    enabled: !!user?.email,
+    staleTime: 5 * 60 * 1000,
+  });
 
-  if (!stats)
+  if (isLoading)
     return (
-      <p className="text-center text-gray-500 mt-10">Loading admin stats...</p>
+      <Loading></Loading>
+    );
+
+  if (isError)
+    return (
+      <p className="text-center text-red-500 mt-10">
+        Error loading admin stats.
+      </p>
     );
 
   const roomData = [

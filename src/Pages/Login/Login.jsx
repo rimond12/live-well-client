@@ -5,8 +5,6 @@ import toast from "react-hot-toast";
 import Lottie from "lottie-react";
 import useAuth from "../../hooks/useAuth";
 import useAxios from "../../hooks/useAxios";
-
-// Lottie animation JSON (আপনি public ফোল্ডারে animation.json রাখবেন)
 import loginAnimation from "../../lotties/Login.json";
 
 const Login = () => {

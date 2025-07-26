@@ -1,43 +1,44 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
 import ApartmentCard from "./ApartmentCard";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import Loading from "../Loading/Loading";
 
 const ApartmentList = () => {
   const { user } = useAuth();
-  const [apartments, setApartments] = useState([]);
-  const [total, setTotal] = useState(0);
+  const axiosSecure = useAxiosSecure();
+
   const [currentPage, setCurrentPage] = useState(1);
   const [minRent, setMinRent] = useState("");
   const [maxRent, setMaxRent] = useState("");
-  const axiosSecure = useAxiosSecure();
 
   const itemsPerPage = 6;
 
-  const fetchApartments = async (page = 1, min = "", max = "") => {
-    const params = {
-      page,
-      limit: itemsPerPage,
-    };
-    if (min !== "") params.min = min;
-    if (max !== "") params.max = max;
+  const fetchApartments = async ({ queryKey }) => {
+    const [_key, page, min, max] = queryKey;
+    const params = { page, limit: itemsPerPage };
+    if (min) params.min = min;
+    if (max) params.max = max;
 
-    try {
-      const res = await axiosSecure.get("/apartments", { params });
-      setApartments(res.data.apartments);
-      setTotal(res.data.total);
-    } catch (err) {
-      Swal.fire("Error!", "Failed to fetch apartments", "error");
-    }
+    const res = await axiosSecure.get("/apartments", { params });
+    return res.data; 
   };
 
-  useEffect(() => {
-    fetchApartments(currentPage, minRent, maxRent);
-  }, [currentPage, minRent, maxRent]);
+  const { data, isLoading, isError, refetch } = useQuery({
+    queryKey: ["apartments", currentPage, minRent, maxRent],
+    queryFn: fetchApartments,
+    keepPreviousData: true,
+  });
+
+  const apartments = data?.apartments || [];
+  const total = data?.total || 0;
+  const totalPages = Math.ceil(total / itemsPerPage);
 
   const handleSearch = () => {
     setCurrentPage(1);
+    refetch(); 
   };
 
   const handleAgreement = async (apartment) => {
@@ -58,7 +59,7 @@ const ApartmentList = () => {
     };
 
     try {
-      const res = await axiosSecure.post("/agreements", agreementData);
+      await axiosSecure.post("/agreements", agreementData);
       Swal.fire("Success!", "Agreement submitted successfully!", "success");
     } catch (err) {
       const status = err?.response?.status;
@@ -66,27 +67,31 @@ const ApartmentList = () => {
         err?.response?.data?.message || "Failed to submit agreement.";
 
       if (status === 409) {
-        // Already requested same apartment (duplicate)
         Swal.fire("Already Exists", message, "info");
       } else if (status === 400) {
-        // কোনো ভ্যালিডেশন ইস্যু হলে
         Swal.fire("Invalid Request", message, "warning");
       } else {
-        // অন্য সব অপ্রত্যাশিত error
         Swal.fire("Error!", message, "error");
       }
     }
   };
 
-  const totalPages = Math.ceil(total / itemsPerPage);
-
-  const goToPrevPage = () => {
+  const goToPrevPage = () =>
     setCurrentPage((prev) => (prev > 1 ? prev - 1 : prev));
-  };
-
-  const goToNextPage = () => {
+  const goToNextPage = () =>
     setCurrentPage((prev) => (prev < totalPages ? prev + 1 : prev));
-  };
+
+  if (isLoading) {
+    return <Loading></Loading>;
+  }
+
+  if (isError) {
+    return (
+      <p className="text-center mt-10 text-xl text-red-500">
+        Failed to fetch apartments
+      </p>
+    );
+  }
 
   return (
     <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
@@ -146,19 +151,6 @@ const ApartmentList = () => {
                 : "bg-[#a38966] text-white hover:bg-[#8b7b58]"
             } transition duration-300 flex items-center gap-1 px-4`}
           >
-            <svg
-              className="h-4 w-4 inline-block"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M15 19l-7-7 7-7"
-              />
-            </svg>
             Prev
           </button>
 
@@ -186,19 +178,6 @@ const ApartmentList = () => {
             } transition duration-300 flex items-center gap-1 px-4`}
           >
             Next
-            <svg
-              className="h-4 w-4 inline-block"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
-            >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M9 5l7 7-7 7"
-              />
-            </svg>
           </button>
         </div>
       )}

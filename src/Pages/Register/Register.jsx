@@ -6,8 +6,6 @@ import useAuth from "../../hooks/useAuth";
 import axios from "axios";
 import useAxios from "../../hooks/useAxios";
 import Lottie from "lottie-react";
-
-// Lottie animation
 import registerAnimation from "../../lotties/Register.json";
 
 const imgbbAPIKey = import.meta.env.VITE_image_upload_key;
@@ -18,8 +16,6 @@ const Register = () => {
   const [isUploading, setIsUploading] = useState(false);
   const navigate = useNavigate();
   const axiosInstance = useAxios();
-
-  // For file input
   const [selectedFileName, setSelectedFileName] = useState("");
   const [previewSrc, setPreviewSrc] = useState("");
 
@@ -27,8 +23,6 @@ const Register = () => {
     const file = e.target.files[0];
     if (file) {
       setSelectedFileName(file.name);
-
-      // Generate preview
       const reader = new FileReader();
       reader.onload = () => {
         setPreviewSrc(reader.result);

@@ -18,14 +18,18 @@ import PaymentHistory from "../Pages/Dashboard/PaymentHistory";
 import ManageMembers from "../Pages/Dashboard/ManageMembers";
 import AgreementRequests from "../Pages/Dashboard/AgreementRequests";
 import PrivateRoute from "../routes/PrivateRoute";
-import Forbidden from "../Pages/Forbidden/Forbidden";
 import AdminRoute from "../routes/AdminRoute";
 import MemberRoute from "../routes/MemberRoute";
 import AdminProfile from "../Pages/Dashboard/AdminProfile";
+import ErrorPage from "../Pages/ErrorPage/ErrorPage";
+import ForbiddenPage from "../Pages/Forbidden/ForbiddenPage";
+import Loading from "../Pages/Loading/Loading";
 
 export const router = createBrowserRouter([
   {
     path: "/",
+    hydrateFallbackElement:<Loading></Loading>,
+    errorElement: <ErrorPage></ErrorPage>,
     Component: MainLayout,
     children: [
       {
@@ -50,7 +54,7 @@ export const router = createBrowserRouter([
       },
       {
         path: "forbidden",
-        Component: Forbidden,
+        Component: ForbiddenPage,
       },
     ],
   },

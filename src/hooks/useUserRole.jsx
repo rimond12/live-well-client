@@ -4,7 +4,6 @@ import useAuth from "./useAuth";
 
 const useUserRole = () => {
   const { user, loading: authLoading } = useAuth();
-//   console.log(user.email);
   
   const axiosSecure = useAxiosSecure();
 

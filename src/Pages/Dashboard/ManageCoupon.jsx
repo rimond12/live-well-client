@@ -1,26 +1,27 @@
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useQuery } from "@tanstack/react-query";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
 
 const ManageCoupon = () => {
-  const [coupons, setCoupons] = useState([]);
   const [form, setForm] = useState({ code: "", discount: "" });
   const axiosSecure = useAxiosSecure();
 
-  const fetchCoupons = async () => {
-    try {
+  // 🔹 GET Coupons with React Query
+  const {
+    data: coupons = [],
+    isLoading,
+    isError,
+    refetch,
+  } = useQuery({
+    queryKey: ["coupons"],
+    queryFn: async () => {
       const res = await axiosSecure.get("/coupons");
-      setCoupons(res.data);
-    } catch (err) {
-      console.error("Failed to load coupons:", err);
-    }
-  };
-
-  useEffect(() => {
-    fetchCoupons();
-  }, []);
+      return res.data;
+    },
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
@@ -43,7 +44,7 @@ const ManageCoupon = () => {
       });
       Swal.fire("Success", "Coupon added successfully!", "success");
       setForm({ code: "", discount: "" });
-      fetchCoupons();
+      refetch(); // 🔹 Add এর পর রিফেচ
     } catch (err) {
       Swal.fire("Error", "Failed to add coupon", "error");
     }
@@ -61,13 +62,27 @@ const ManageCoupon = () => {
     if (confirm.isConfirmed) {
       try {
         await axiosSecure.delete(`/coupons/${id}`);
-        fetchCoupons();
         Swal.fire("Deleted!", "Coupon has been deleted.", "success");
+        refetch(); // 🔹 Delete এর পর রিফেচ
       } catch (err) {
         Swal.fire("Error", "Failed to delete coupon", "error");
       }
     }
   };
+
+  if (isLoading)
+    return (
+      <p className="text-center mt-10 text-lg font-semibold text-[#c7b39a] animate-pulse">
+        Loading coupons...
+      </p>
+    );
+
+  if (isError)
+    return (
+      <p className="text-center mt-10 text-red-500 font-semibold text-xl">
+        Failed to load coupons.
+      </p>
+    );
 
   return (
     <section className="max-w-6xl mx-auto p-6 md:p-10">

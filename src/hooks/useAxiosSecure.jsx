@@ -4,10 +4,10 @@ import { useNavigate } from "react-router";
 import { useEffect } from "react";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:3000", // Change to 5000 if needed
+  baseURL: "http://localhost:3000", 
 });
 
-// Request interceptor to add Firebase token
+
 axiosSecure.interceptors.request.use(async (config) => {
   const auth = getAuth();
   const user = auth.currentUser;
