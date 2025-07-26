@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "./useAxiosSecure";
 import useAuth from "./useAuth";
+import toast from "react-hot-toast";
 
 const useAgreement = () => {
   const [agreement, setAgreement] = useState(null);
@@ -14,7 +15,7 @@ const useAgreement = () => {
           setAgreement(res.data);
         })
         .catch((err) => {
-          console.error("Failed to fetch agreement", err);
+          toast.error("Failed to fetch agreement", err);
         });
     }
   }, [user, axiosSecure]);

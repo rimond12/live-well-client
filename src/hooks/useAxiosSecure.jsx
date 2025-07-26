@@ -2,9 +2,10 @@ import axios from "axios";
 import { getAuth, signOut } from "firebase/auth";
 import { useNavigate } from "react-router";
 import { useEffect } from "react";
+import toast from "react-hot-toast";
 
 const axiosSecure = axios.create({
-  baseURL: "http://localhost:3000", 
+  baseURL: `https://live-well-server.vercel.app`, 
 });
 
 
@@ -13,7 +14,6 @@ axiosSecure.interceptors.request.use(async (config) => {
   const user = auth.currentUser;
   if (user) {
     const token = await user.getIdToken();
-    console.log("🔥 Token being sent:", token);
     config.headers.Authorization = `Bearer ${token}`;
   }
   return config;
@@ -36,7 +36,7 @@ const useAxiosSecure = () => {
           const auth = getAuth();
           signOut(auth)
             .then(() => navigate("/login"))
-            .catch((err) => console.error("Sign out error", err));
+            .catch((err) => toast.error("Sign out error", err));
         }
 
         return Promise.reject(error);

@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "./useAxiosSecure";
 import useAuth from "./useAuth";
+import toast from "react-hot-toast";
 
 const useUserRole = () => {
   const { user, loading: authLoading } = useAuth();
@@ -19,7 +20,7 @@ const useUserRole = () => {
           setRole(res.data.role || "user");
         })
         .catch((err) => {
-          console.error("Role fetch error:", err);
+          toast.error("Role fetch error:", err);
           setRole("user");
         })
         .finally(() => setLoading(false));
