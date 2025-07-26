@@ -9,7 +9,6 @@ const AdminRoute = ({ children }) => {
   const { role, loading: roleLoading } = useUserRole();
   const location = useLocation();
 
-  // এখন দুই loading একসাথে handle করি
   if (authLoading || roleLoading || role === null) {
     return <Loading></Loading>;
   }

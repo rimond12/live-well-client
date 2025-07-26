@@ -17,7 +17,6 @@ const ApartmentCard = ({ apartment, onAgreement }) => {
     }
   };
 
-  // Animation variants for card
   const cardVariants = {
     hidden: { opacity: 0, y: 30 },
     visible: {
