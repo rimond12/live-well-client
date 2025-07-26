@@ -4,7 +4,7 @@ import useAuth from "../hooks/useAuth";
 import Loading from "../Pages/Loading/Loading";
 
 const PrivateRoute = ({ children }) => {
-  const { user, loading  } = useAuth()
+  const { user, loading } = useAuth();
   const location = useLocation();
 
   if (loading) {

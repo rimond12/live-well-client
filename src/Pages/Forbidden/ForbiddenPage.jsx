@@ -1,8 +1,7 @@
 import React from "react";
 import { Link } from "react-router";
 import Lottie from "lottie-react";
-import forbiddenAnimation from "../../lotties/No Entry.json"; // <- Download a forbidden animation JSON
-
+import forbiddenAnimation from "../../lotties/No Entry.json"; 
 const ForbiddenPage = () => {
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100 text-center p-6">

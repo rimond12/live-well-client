@@ -8,6 +8,7 @@ import {
   FaCheckCircle,
 } from "react-icons/fa";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
+import toast from "react-hot-toast";
 
 const CouponSection = () => {
   const [coupons, setCoupons] = useState([]);
@@ -18,7 +19,7 @@ const CouponSection = () => {
     axiosSecure
       .get("/coupon")
       .then((res) => setCoupons(res.data))
-      .catch((err) => console.error(err));
+      .catch((err) => toast.error(err));
   }, [axiosSecure]);
 
   const handleCopy = (code) => {
@@ -29,7 +30,6 @@ const CouponSection = () => {
 
   return (
     <section className="relative py-20 px-6 md:px-20 bg-[#111111] overflow-hidden my-20">
-      {/* Decorative Gradient Blobs */}
       <div className="absolute top-10 left-0 w-72 h-72 bg-[#c7b39a] opacity-20 blur-3xl rounded-full"></div>
       <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#c7b39a] opacity-10 blur-3xl rounded-full"></div>
 

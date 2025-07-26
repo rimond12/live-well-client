@@ -39,10 +39,7 @@ const AdminProfile = () => {
     staleTime: 5 * 60 * 1000,
   });
 
-  if (isLoading)
-    return (
-      <Loading></Loading>
-    );
+  if (isLoading) return <Loading></Loading>;
 
   if (isError)
     return (

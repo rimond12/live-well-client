@@ -9,7 +9,6 @@ const AgreementRequests = () => {
   const axiosSecure = useAxiosSecure();
   const queryClient = useQueryClient();
 
- 
   const {
     data: requests = [],
     isLoading,
@@ -21,7 +20,6 @@ const AgreementRequests = () => {
       return Array.isArray(res.data) ? res.data : [];
     },
   });
-
 
   const handleAccept = async (id, userEmail) => {
     try {
@@ -43,10 +41,7 @@ const AgreementRequests = () => {
     }
   };
 
-  if (isLoading)
-    return (
-      <Loading></Loading>
-    );
+  if (isLoading) return <Loading></Loading>;
 
   if (isError)
     return (
@@ -92,7 +87,9 @@ const AgreementRequests = () => {
             {requests.map((req, idx) => (
               <tr
                 key={req._id}
-                className={`${idx % 2 === 0 ? "bg-gray-50" : "bg-white"} hover:bg-[#f9f7f4] transition`}
+                className={`${
+                  idx % 2 === 0 ? "bg-gray-50" : "bg-white"
+                } hover:bg-[#f9f7f4] transition`}
               >
                 <td className="p-3 font-medium text-gray-700">
                   {req.userName || req.userEmail.split("@")[0]}
@@ -101,8 +98,12 @@ const AgreementRequests = () => {
                 <td className="p-3">{req.floorNo}</td>
                 <td className="p-3">{req.blockName}</td>
                 <td className="p-3">{req.apartmentNo}</td>
-                <td className="p-3 font-semibold text-[#c7b39a]">${req.rent}</td>
-                <td className="p-3">{new Date(req.date).toLocaleDateString()}</td>
+                <td className="p-3 font-semibold text-[#c7b39a]">
+                  ${req.rent}
+                </td>
+                <td className="p-3">
+                  {new Date(req.date).toLocaleDateString()}
+                </td>
                 <td className="p-3 space-x-2">
                   <button
                     onClick={() => handleAccept(req._id, req.userEmail)}
@@ -135,10 +136,18 @@ const AgreementRequests = () => {
             </h3>
             <p className="text-gray-700 text-sm">{req.userEmail}</p>
             <div className="grid grid-cols-2 text-sm gap-y-1">
-              <p><span className="font-semibold">Floor:</span> {req.floorNo}</p>
-              <p><span className="font-semibold">Block:</span> {req.blockName}</p>
-              <p><span className="font-semibold">Room:</span> {req.apartmentNo}</p>
-              <p><span className="font-semibold">Rent:</span> ${req.rent}</p>
+              <p>
+                <span className="font-semibold">Floor:</span> {req.floorNo}
+              </p>
+              <p>
+                <span className="font-semibold">Block:</span> {req.blockName}
+              </p>
+              <p>
+                <span className="font-semibold">Room:</span> {req.apartmentNo}
+              </p>
+              <p>
+                <span className="font-semibold">Rent:</span> ${req.rent}
+              </p>
             </div>
             <p className="text-xs text-gray-500">
               {new Date(req.date).toLocaleDateString()}

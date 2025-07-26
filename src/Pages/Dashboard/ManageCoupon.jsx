@@ -4,12 +4,12 @@ import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { FaTrash } from "react-icons/fa";
 import Swal from "sweetalert2";
 import { motion } from "framer-motion";
+import Loading from "../Loading/Loading";
 
 const ManageCoupon = () => {
   const [form, setForm] = useState({ code: "", discount: "" });
   const axiosSecure = useAxiosSecure();
 
-  // 🔹 GET Coupons with React Query
   const {
     data: coupons = [],
     isLoading,
@@ -44,7 +44,7 @@ const ManageCoupon = () => {
       });
       Swal.fire("Success", "Coupon added successfully!", "success");
       setForm({ code: "", discount: "" });
-      refetch(); // 🔹 Add এর পর রিফেচ
+      refetch(); 
     } catch (err) {
       Swal.fire("Error", "Failed to add coupon", "error");
     }
@@ -72,9 +72,7 @@ const ManageCoupon = () => {
 
   if (isLoading)
     return (
-      <p className="text-center mt-10 text-lg font-semibold text-[#c7b39a] animate-pulse">
-        Loading coupons...
-      </p>
+      <Loading></Loading>
     );
 
   if (isError)

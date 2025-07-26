@@ -1,11 +1,10 @@
 import React from "react";
 import { Link, useRouteError } from "react-router";
 import Lottie from "lottie-react";
-import errorAnimation from "../../lotties/Error 404.json"; // <-- Download JSON to your assets folder
+import errorAnimation from "../../lotties/Error 404.json"; 
 
 const ErrorPage = () => {
   const error = useRouteError();
-  console.error(error);
 
   return (
     <div className="flex flex-col items-center justify-center h-screen bg-gray-100 text-center p-6">

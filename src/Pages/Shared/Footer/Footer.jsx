@@ -10,7 +10,6 @@ const Footer = () => {
   return (
     <footer className="bg-[#111111] py-10 px-6 md:px-20">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-        {/* Column 1: Logo & Brand */}
         <div>
           <h2
             className="text-3xl font-bold font-serif mb-4"
@@ -24,7 +23,6 @@ const Footer = () => {
           </p>
         </div>
 
-        {/* Column 2: Quick Links */}
         <div>
           <h3
             className="text-xl font-semibold mb-4"
@@ -51,7 +49,6 @@ const Footer = () => {
           </ul>
         </div>
 
-        {/* Column 3: Contact & Social */}
         <div>
           <h3
             className="text-xl font-semibold mb-4"

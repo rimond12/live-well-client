@@ -3,6 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import useUserRole from "../../hooks/useUserRole";
+import Loading from "../Loading/Loading";
 
 const MyProfile = () => {
   const { user } = useAuth();
@@ -20,10 +21,8 @@ const MyProfile = () => {
 
   if (isLoading || roleLoading)
     return (
-      <div className="flex justify-center items-center h-screen">
-        <p className="text-lg font-semibold text-[#a38966] animate-pulse">
-          Loading profile...
-        </p>
+      <div>
+       <Loading></Loading>
       </div>
     );
 

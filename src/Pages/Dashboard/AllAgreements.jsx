@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import Loading from "../Loading/Loading";
 
 const AllAgreements = () => {
   const [agreements, setAgreements] = useState([]);
@@ -38,9 +39,7 @@ const AllAgreements = () => {
 
   if (loading)
     return (
-      <p className="text-center mt-10 text-lg font-semibold text-[#c7b39a] animate-pulse">
-        Loading agreements...
-      </p>
+     <Loading></Loading>
     );
 
   if (agreements.length === 0)

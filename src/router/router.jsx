@@ -1,7 +1,6 @@
 import { createBrowserRouter } from "react-router";
 import MainLayout from "../Layouts/MainLayout";
 import Home from "../Pages/Home/Home/Home";
-
 import Register from "../Pages/Register/Register";
 import Login from "../Pages/Login/Login";
 import ApartmentList from "../Pages/ApartmentList/ApartmentList";
@@ -28,7 +27,7 @@ import Loading from "../Pages/Loading/Loading";
 export const router = createBrowserRouter([
   {
     path: "/",
-    hydrateFallbackElement:<Loading></Loading>,
+    hydrateFallbackElement: <Loading></Loading>,
     errorElement: <ErrorPage></ErrorPage>,
     Component: MainLayout,
     children: [
@@ -60,7 +59,11 @@ export const router = createBrowserRouter([
   },
   {
     path: "/dashboard",
-    element: <DashboardLayout />,
+    element: (
+      <PrivateRoute>
+        <DashboardLayout />
+      </PrivateRoute>
+    ),
     children: [
       {
         path: "",

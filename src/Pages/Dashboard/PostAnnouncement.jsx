@@ -2,6 +2,7 @@ import { useState } from "react";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import { motion } from "framer-motion";
 import { FaBullhorn } from "react-icons/fa";
+import toast from "react-hot-toast";
 
 const PostAnnouncement = () => {
   const [title, setTitle] = useState("");
@@ -40,7 +41,7 @@ const PostAnnouncement = () => {
         type: "error",
         text: "An error occurred. Try again later.",
       });
-      console.error(error);
+      toast.error(error);
     } finally {
       setLoading(false);
     }

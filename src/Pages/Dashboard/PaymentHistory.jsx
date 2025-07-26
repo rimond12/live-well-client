@@ -7,7 +7,6 @@ const PaymentHistory = () => {
   const axiosSecure = useAxiosSecure();
   const { user } = useAuth();
 
-  // Fetch payments using React Query
   const { data: payments = [], isLoading } = useQuery({
     queryKey: ["paymentHistory", user?.email],
     enabled: !!user?.email,
@@ -19,10 +18,7 @@ const PaymentHistory = () => {
     },
   });
 
-  if (isLoading)
-    return (
-     <Loading></Loading>
-    );
+  if (isLoading) return <Loading></Loading>;
 
   if (!payments.length)
     return (

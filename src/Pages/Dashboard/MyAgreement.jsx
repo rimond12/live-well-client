@@ -7,7 +7,6 @@ const MyAgreement = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
 
-  // Fetch agreement data using React Query
   const { data: agreement, isLoading } = useQuery({
     queryKey: ["userAgreement", user?.email],
     enabled: !!user?.email,
@@ -20,7 +19,7 @@ const MyAgreement = () => {
   if (isLoading) {
     return (
       <>
-      <Loading></Loading>
+        <Loading></Loading>
       </>
     );
   }
