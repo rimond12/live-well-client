@@ -1,3 +1,11 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300..700&display=swap');
+
+body {
+   font-family: "Space Grotesk", sans-serif;
+    font-weight: 700;
+}
+
+
 @import "tailwindcss";
 @plugin "daisyui"{
   themes: light --default
@@ -6,9 +14,9 @@
 
 
 .leaflet-container {
-  z-index: 0 !important; /* map container সবসময় নিচে */
+  z-index: 0 !important; 
 }
 .leaflet-pane {
-  z-index: 0 !important; /* marker & popup নিচে */
+  z-index: 0 !important;
 }
 

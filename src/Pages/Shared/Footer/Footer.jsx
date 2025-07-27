@@ -10,19 +10,28 @@ const Footer = () => {
   return (
     <footer className="bg-[#111111] py-10 px-6 md:px-20">
       <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-3 gap-10">
-        <div>
-          <h2
-            className="text-3xl font-bold font-serif mb-4"
-            style={{ color: "#ccbead" }}
-          >
-            LiveWell
-          </h2>
+        {/* Logo & Name & Description */}
+        <div className="flex flex-col items-start">
+          <div className="flex items-center gap-3 mb-4">
+            <img
+              src="https://i.ibb.co/pv8PQkKy/1.png"
+              alt="LiveWell Logo"
+              className="w-10 h-10"
+            />
+            <h2
+              className="text-3xl font-bold font-serif"
+              style={{ color: "#ccbead" }}
+            >
+              LiveWell
+            </h2>
+          </div>
           <p className="leading-relaxed" style={{ color: "#ccbead" }}>
             LiveWell Apartments brings you the best in urban living with
             comfort, convenience, and community.
           </p>
         </div>
 
+        {/* Quick Links */}
         <div>
           <h3
             className="text-xl font-semibold mb-4"
@@ -49,6 +58,7 @@ const Footer = () => {
           </ul>
         </div>
 
+        {/* Contact & Social */}
         <div>
           <h3
             className="text-xl font-semibold mb-4"
@@ -104,6 +114,7 @@ const Footer = () => {
         </div>
       </div>
 
+      {/* Bottom Text */}
       <div
         className="text-center mt-10 text-sm select-none"
         style={{ color: "#ccbead" }}

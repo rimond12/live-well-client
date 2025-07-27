@@ -23,6 +23,7 @@ import AdminProfile from "../Pages/Dashboard/AdminProfile";
 import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import ForbiddenPage from "../Pages/Forbidden/ForbiddenPage";
 import Loading from "../Pages/Loading/Loading";
+import AboutPage from "../Pages/AboutPage/AboutPage";
 
 export const router = createBrowserRouter([
   {
@@ -50,6 +51,10 @@ export const router = createBrowserRouter([
             <ApartmentList></ApartmentList>
           </PrivateRoute>
         ),
+      },
+      {
+        path: "about",
+        element: <AboutPage></AboutPage>,
       },
       {
         path: "forbidden",

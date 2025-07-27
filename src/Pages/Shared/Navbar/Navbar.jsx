@@ -5,7 +5,7 @@ import { MdDashboard } from "react-icons/md";
 import { FiLogOut } from "react-icons/fi";
 import { toast } from "react-hot-toast";
 import useAuth from "../../../hooks/useAuth";
-import "./style.css"
+import "./style.css";
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -22,7 +22,6 @@ const Navbar = () => {
     setIsOpen(false);
   };
 
-  // Close profile dropdown on outside click
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (profileRef.current && !profileRef.current.contains(event.target)) {
@@ -83,9 +82,9 @@ const Navbar = () => {
               onClick={() => setIsOpen(false)}
             >
               <img
-                src="https://i.ibb.co/XZc9wy9p/1753464152586.png"
+                src="https://i.ibb.co/pv8PQkKy/1.png"
                 alt="LiveWell Logo"
-                className="w-30 h-30 object-contain"
+                className="w-10 h-10 object-contain"
               />
               <span className="text-2xl font-bold font-serif text-[#c7b39a]">
                 LiveWell
