@@ -1,12 +1,60 @@
-# React + Vite
+# Live Well - Building Management System
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A full-featured building management system where users can view apartments, apply for rental agreements, and manage payments, while admins and members have role-based access for additional features.
 
-Currently, two official plugins are available:
+## 🌐 Live Website
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+[Live Well](https://llive-well.netlify.app/)
 
-## Expanding the ESLint configuration
+---
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## ✨ Features
+
+- **User Authentication** with Firebase (Email/Password & Google Login)
+- **Role-Based Dashboards**
+  - **Admin**: Manage apartments, view agreement requests, manage users.
+  - **Member**: View personal apartment agreements and make payments.
+  - **User**: Browse apartments, apply for agreements.
+- **Apartment Management**:
+  - View all apartments with floor, block, rent, and availability.
+  - Agreement request system with pending/accept/reject workflow.
+- **Payment Integration**: Stripe integration for secure payments.
+- **Coupons & Discounts**: Apply coupon codes for rent discounts.
+- **Dynamic Search & Pagination** on apartment listing.
+- **Responsive & Modern UI** using TailwindCSS + DaisyUI + Framer Motion animations.
+- **Interactive Map** using React Leaflet.
+- **Lottie Animations** for loading & error pages.
+
+---
+
+## 🛠️ Tech Stack
+
+- **Frontend**: React 19, Vite, TailwindCSS, DaisyUI, Framer Motion
+- **Backend**: Node.js, Express, MongoDB (deployed on Vercel)
+- **Authentication**: Firebase
+- **Payments**: Stripe
+- **Data Fetching**: Axios + React Query
+
+---
+
+## 📦 Dependencies
+
+Key dependencies from `package.json`:
+
+- `react`, `react-dom`, `react-router`
+- `axios`, `@tanstack/react-query`
+- `tailwindcss`, `daisyui`
+- `firebase`, `sweetalert2`
+- `stripe`, `react-stripe-js`, `stripe-js`
+- `lottie-react`, `framer-motion`, `react-icons`, `recharts`, `react-leaflet`
+
+---
+
+## 🚀 Setup Instructions
+
+### 1. Clone Repository
+
+```bash
+git clone <repo-url>
+cd live-well-client
+```

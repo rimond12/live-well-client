@@ -5,14 +5,12 @@ const AboutSection = () => {
   return (
     <section className="relative py-20 px-6 md:px-20 my-20 overflow-visible">
       <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-center gap-12">
-        {/* Image with fancy glow & border */}
         <motion.div
           className="md:w-1/2 relative group"
           initial={{ opacity: 0, x: -100 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
         >
-          {/* Glow & Border */}
           <div className="absolute inset-0 rounded-lg border-4 border-[#c7b39a] opacity-30 group-hover:opacity-70 transition-opacity duration-300 shadow-[0_0_40px_rgba(199,179,154,0.6)]"></div>
           <img
             src="https://i.ibb.co/QFyDpzZD/istockphoto-479842074-612x612.jpg"

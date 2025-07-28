@@ -9,6 +9,7 @@ import {
 import useAuth from "../../hooks/useAuth";
 import useAxiosSecure from "../../hooks/useAxiosSecure";
 import Swal from "sweetalert2";
+import Loading from "../Loading/Loading";
 
 const stripePromise = loadStripe(import.meta.env.VITE_PAYMENT_KEY);
 
@@ -274,7 +275,7 @@ const MakePaymentWrapper = () => {
 
   if (!agreement)
     return (
-      <p className="text-center mt-10 text-[#a38966]">Loading agreement...</p>
+      <Loading></Loading>
     );
 
   return (
