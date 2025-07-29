@@ -1,8 +1,10 @@
 import React, { useEffect, useState } from "react";
 
 const bannerImages = [
-  "https://images.unsplash.com/photo-1506744038136-46273834b3fb?auto=format&fit=crop&w=1350&q=80",
-  "https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=1350&q=80",
+  "https://i.ibb.co/7JsZnJzG/2151551212.jpg",
+  "https://i.ibb.co/sdPPt5qQ/1105.jpg",
+  "https://i.ibb.co/LDwtZTT1/2148972401.jpg",
+  "https://i.ibb.co/B2xHzH8x/3122.jpg",
 ];
 
 const Banner = () => {
