@@ -9,7 +9,7 @@ const LocationSection = () => {
   const position = [23.7543, 90.417];
 
   return (
-    <section className="py-20 px-0 relative">
+    <section className="py-20 px-0 relative px-6 md:px-2">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8">
         <motion.div
           className="relative bg-[#111111] p-10 flex flex-col justify-center text-white"

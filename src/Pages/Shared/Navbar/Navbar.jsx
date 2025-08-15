@@ -71,8 +71,8 @@ const Navbar = () => {
   );
 
   return (
-    <div className="sticky top-0 z-50 bg-[#111111] shadow-md">
-      <div className="max-w-7xl mx-auto px-4">
+    <div className="sticky top-0 z-50 bg-[#111111] shadow-md px-6 md:px-2">
+      <div className="max-w-7xl mx-auto ">
         <div className="flex items-center justify-between py-3 relative">
           {/* Left: Logo */}
           <div className="flex-1 flex items-center gap-2">
