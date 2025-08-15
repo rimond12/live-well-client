@@ -12,7 +12,7 @@ const LocationSection = () => {
     <section className="py-20  relative px-6 md:px-2">
       <div className="max-w-7xl mx-auto grid md:grid-cols-2 gap-8">
         <motion.div
-          className="relative bg-[#111111] p-10 flex flex-col justify-center text-white"
+          className="relative bg-[#111111] p-10 flex flex-col justify-center text-white rounded-xl"
           initial={{ opacity: 0, x: -100 }}
           whileInView={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, ease: "easeOut" }}
