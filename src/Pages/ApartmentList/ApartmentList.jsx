@@ -94,7 +94,7 @@ const ApartmentList = () => {
   }
 
   return (
-    <div className="max-w-6xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
+    <div className="max-w-7xl mx-auto py-12 px-4 sm:px-6 lg:px-8">
       <h2 className="text-4xl font-extrabold mb-10 text-center text-[#a38966] drop-shadow-lg">
         Available Apartments
       </h2>
