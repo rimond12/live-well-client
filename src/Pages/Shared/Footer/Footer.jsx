@@ -1,9 +1,9 @@
 import React from "react";
 import {
   FaFacebookF,
-  FaTwitter,
   FaLinkedinIn,
   FaEnvelope,
+  FaGithub,
 } from "react-icons/fa";
 
 const Footer = () => {
@@ -70,18 +70,9 @@ const Footer = () => {
             Gulshan Avenue, Dhaka, Bangladesh
           </p>
           <div className="flex gap-6 text-2xl">
+          
             <a
-              href="mailto:info@livewell.com"
-              className="transition-colors duration-300"
-              style={{ color: "#ccbead" }}
-              onMouseEnter={(e) => (e.target.style.color = "#fff")}
-              onMouseLeave={(e) => (e.target.style.color = "#ccbead")}
-              aria-label="Email"
-            >
-              <FaEnvelope />
-            </a>
-            <a
-              href="#"
+              href="https://www.facebook.com/share/1JLTjbo5EN/"
               className="transition-colors duration-300"
               style={{ color: "#ccbead" }}
               onMouseEnter={(e) => (e.target.style.color = "#3b5998")}
@@ -91,17 +82,17 @@ const Footer = () => {
               <FaFacebookF />
             </a>
             <a
-              href="#"
+              href="https://github.com/rimond12"
               className="transition-colors duration-300"
               style={{ color: "#ccbead" }}
               onMouseEnter={(e) => (e.target.style.color = "#1da1f2")}
               onMouseLeave={(e) => (e.target.style.color = "#ccbead")}
               aria-label="Twitter"
             >
-              <FaTwitter />
+             <FaGithub />
             </a>
             <a
-              href="#"
+              href="https://www.linkedin.com/in/rimon-dey/"
               className="transition-colors duration-300"
               style={{ color: "#ccbead" }}
               onMouseEnter={(e) => (e.target.style.color = "#0077b5")}
