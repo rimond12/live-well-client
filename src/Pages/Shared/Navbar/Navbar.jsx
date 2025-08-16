@@ -174,8 +174,6 @@ const Navbar = () => {
             )}
           </div>
 
-
-
           {/* Mobile Toggle */}
           <div className="md:hidden">
             <button
@@ -187,8 +185,6 @@ const Navbar = () => {
           </div>
         </div>
       </div>
-
-
       {/* Mobile Dropdown */}
       {isOpen && (
         <div className="md:hidden bg-[#111111] px-6 pb-4 shadow-sm">
