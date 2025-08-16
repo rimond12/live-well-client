@@ -67,6 +67,17 @@ const Navbar = () => {
           About
         </NavLink>
       </li>
+      <li>
+        <NavLink
+          to="/contact"
+          className={({ isActive }) =>
+            isActive ? "nav-link active" : "nav-link"
+          }
+          onClick={() => setIsOpen(false)}
+        >
+          Contact Us
+        </NavLink>
+      </li>
     </>
   );
 
@@ -94,10 +105,12 @@ const Navbar = () => {
 
           {/* Center: Menu */}
           <div className="hidden md:flex flex-1 justify-center">
-            <ul className="menu menu-horizontal gap-8 text-[14px] text-[#ccbead] font-medium">
+            <ul className="menu menu-horizontal gap-5 text-[14px] text-[#ccbead] font-medium">
               {navLinks}
             </ul>
           </div>
+
+
 
           {/* Right: Auth Buttons / Profile */}
           <div className="flex-1 text-right hidden md:block">
@@ -161,6 +174,8 @@ const Navbar = () => {
             )}
           </div>
 
+
+
           {/* Mobile Toggle */}
           <div className="md:hidden">
             <button
@@ -172,6 +187,7 @@ const Navbar = () => {
           </div>
         </div>
       </div>
+
 
       {/* Mobile Dropdown */}
       {isOpen && (
@@ -229,6 +245,7 @@ const Navbar = () => {
           </ul>
         </div>
       )}
+
     </div>
   );
 };

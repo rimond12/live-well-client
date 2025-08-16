@@ -24,6 +24,7 @@ import ErrorPage from "../Pages/ErrorPage/ErrorPage";
 import ForbiddenPage from "../Pages/Forbidden/ForbiddenPage";
 import Loading from "../Pages/Loading/Loading";
 import AboutPage from "../Pages/AboutPage/AboutPage";
+import ContactUs from "../Pages/ContactUs/ContactUs";
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
       {
         path: "about",
         element: <AboutPage></AboutPage>,
+      },
+      {
+        path:"contact",
+        element: <ContactUs></ContactUs>
       },
       {
         path: "forbidden",
