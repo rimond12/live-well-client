@@ -6,6 +6,7 @@ import LocationSection from "../../Shared/LocationSection/LocationSection";
 import FeaturedApartments from "../../Shared/FeaturedApartments/FeaturedApartments";
 import ServicesSection from "../../Shared/ServicesSection/ServicesSection";
 import NewsletterSection from "../../Shared/NewsletterSection/NewsletterSection";
+import TestimonialsSection from "../../Shared/testimonials/testimonials";
 
 const Home = () => {
   return (
@@ -14,10 +15,11 @@ const Home = () => {
       <AboutSection></AboutSection>
       <CouponSection></CouponSection>
       <FeaturedApartments></FeaturedApartments>
-       <ServicesSection></ServicesSection>
-     
-      <NewsletterSection></NewsletterSection>
+      <ServicesSection></ServicesSection>
+      <TestimonialsSection></TestimonialsSection>
+
       <LocationSection></LocationSection>
+      <NewsletterSection></NewsletterSection>
 
     </div>
   );

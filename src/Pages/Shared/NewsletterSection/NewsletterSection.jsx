@@ -7,7 +7,7 @@ const NewsletterSection = () => {
     const isInView = useInView(ref, { once: true, amount: 0.3 });
 
     return (
-        <section className="relative py-20 px-6 md:px-2 bg-[#111111] my-20 overflow-visible">
+        <section className=" relative max-w-7xl mx-auto rounded-xl py-20 px-6 md:px-2 bg-[#111111] my-20 overflow-visible ">
             {/* Decorative blobs */}
             <div className="absolute top-10 left-0 w-72 h-72 bg-[#c7b39a] opacity-20 blur-3xl rounded-full"></div>
             <div className="absolute bottom-0 right-0 w-80 h-80 bg-[#c7b39a] opacity-10 blur-3xl rounded-full"></div>
