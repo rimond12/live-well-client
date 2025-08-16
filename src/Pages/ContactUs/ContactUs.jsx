@@ -37,10 +37,10 @@ export default function ContactUs() {
                             Dhaka, Bangladesh
                         </p>
                         <p className="flex items-center gap-3">
-                            <FaPhoneAlt className="text-[#a38966]" /> +880 1234-567890
+                            <FaPhoneAlt className="text-[#a38966]" /> +880 1859594076
                         </p>
                         <p className="flex items-center gap-3">
-                            <FaEnvelope className="text-[#a38966]" /> support@livewell.com
+                            <FaEnvelope className="text-[#a38966]" /> rimondey010@gmail.com.com
                         </p>
                     </div>
                 </motion.div>
