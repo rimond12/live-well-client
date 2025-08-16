@@ -13,11 +13,11 @@ const Testimonials = () => {
   const [current, setCurrent] = useState(0);
   const length = testimonials.length;
 
-  // Auto-slide
+
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrent((prev) => (prev + 1) % length);
-    }, 4000); // 4 seconds
+    }, 4000); 
     return () => clearInterval(timer);
   }, [length]);
 
